@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +10,10 @@
     <link rel="stylesheet" href="../components/modal/modal.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
     <style>
         /* Admin custom dashboard layout */
         body {
@@ -816,6 +819,7 @@
                 grid-template-columns: 1fr;
                 gap: 32px;
             }
+
             .categories-manager-grid {
                 grid-template-columns: 1fr;
             }
@@ -826,7 +830,10 @@
                 grid-template-columns: 1fr;
                 gap: 16px;
             }
-            .table-card, .cms-inventory-card, .cms-form-card {
+
+            .table-card,
+            .cms-inventory-card,
+            .cms-form-card {
                 padding: 20px 16px;
             }
         }
@@ -844,6 +851,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Header bar -->
@@ -864,12 +872,13 @@
         <div id="login-gate" class="login-overlay">
             <div class="login-card">
                 <div class="login-lock-icon">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                 </div>
-                
+
                 <!-- standard login -->
                 <div id="login-view">
                     <h2>Access Portal</h2>
@@ -886,7 +895,7 @@
 
         <!-- 2. PORTAL CONTENT (Hidden on start) -->
         <div id="admin-dashboard" class="dashboard-container">
-            
+
             <!-- Dashboard navigation tabs -->
             <div class="admin-tabs">
                 <button class="tab-btn active" id="tab-enquiries-btn">Enquiries</button>
@@ -918,13 +927,14 @@
                     <div class="table-header-row" style="flex-wrap: wrap; gap: 16px;">
                         <h3 class="table-title">Visitor Requests Log</h3>
                         <div style="display: flex; gap: 12px; align-items: center; margin-left: auto;">
-                            <select id="enquiry-product-filter" style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-light); font-family: var(--font-sans); font-size: 12px; background-color: var(--bg-cream); color: var(--text-primary); outline: none;">
+                            <select id="enquiry-product-filter"
+                                style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-light); font-family: var(--font-sans); font-size: 12px; background-color: var(--bg-cream); color: var(--text-primary); outline: none;">
                                 <option value="all">All Products</option>
                             </select>
                             <button id="clear-logs-btn" class="btn-clear-logs">Clear All Logs</button>
                         </div>
                     </div>
-                    
+
                     <div id="table-wrapper">
                         <table class="inquiries-table" id="inquiries-table">
                             <thead>
@@ -942,9 +952,10 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <div id="empty-state" class="empty-state" style="display:none;">
-                        No inquiries logged yet. Submitting an email enquiry or clicking WhatsApp actions in the modal will record logs here in real-time.
+                        No inquiries logged yet. Submitting an email enquiry or clicking WhatsApp actions in the modal
+                        will record logs here in real-time.
                     </div>
                 </div>
             </div>
@@ -952,9 +963,11 @@
             <!-- PANEL 2: PRODUCT INVENTORY LIST -->
             <div class="tab-panel" id="panel-inventory">
                 <div class="cms-inventory-card">
-                    <div class="table-header-row" style="border-bottom: 1px solid var(--border-light); padding-bottom: 12px; margin-bottom: 24px; align-items: center; width: 100%; display: flex;">
+                    <div class="table-header-row"
+                        style="border-bottom: 1px solid var(--border-light); padding-bottom: 12px; margin-bottom: 24px; align-items: center; width: 100%; display: flex;">
                         <h3 style="margin-bottom: 0; border: none; padding-bottom: 0;">Current Floor Inventory</h3>
-                        <select id="inventory-category-filter" style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-light); font-family: var(--font-sans); font-size: 12px; background-color: var(--bg-cream); color: var(--text-primary); margin-left: auto; width: auto; min-width: 150px; outline: none;">
+                        <select id="inventory-category-filter"
+                            style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-light); font-family: var(--font-sans); font-size: 12px; background-color: var(--bg-cream); color: var(--text-primary); margin-left: auto; width: auto; min-width: 150px; outline: none;">
                             <option value="all">All Categories</option>
                         </select>
                     </div>
@@ -976,7 +989,7 @@
                             <label for="product-name">Product Title</label>
                             <input type="text" id="product-name" placeholder="e.g. Vintage Brass Urn" required>
                         </div>
-                        
+
                         <div class="cms-form-group">
                             <label for="product-material">Material Category</label>
                             <select id="product-material" required>
@@ -1001,14 +1014,17 @@
 
                         <div class="cms-form-group">
                             <label for="product-desc">Craft Description</label>
-                            <textarea id="product-desc" rows="3" placeholder="Artistic details, history, materials, polish finish..." required></textarea>
+                            <textarea id="product-desc" rows="3"
+                                placeholder="Artistic details, history, materials, polish finish..."
+                                required></textarea>
                         </div>
 
                         <!-- Photo Selector Uploader (Base64 conversion) -->
                         <div class="cms-form-group">
                             <label>Product Photos (Minimum 1, Maximum 12)</label>
                             <div class="photo-picker-box" id="photo-picker-box">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b28652" stroke-width="1.5" id="photo-picker-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b28652"
+                                    stroke-width="1.5" id="photo-picker-icon">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                     <polyline points="17 8 12 3 7 8"></polyline>
                                     <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -1022,8 +1038,10 @@
                         </div>
 
                         <div class="form-submit-row">
-                            <button type="submit" id="btn-submit-product" class="btn-add-product">Add Product To Floor</button>
-                            <button type="button" id="btn-cancel-edit" class="btn-cancel-edit" style="display: none;">Cancel Edit</button>
+                            <button type="submit" id="btn-submit-product" class="btn-add-product">Add Product To
+                                Floor</button>
+                            <button type="button" id="btn-cancel-edit" class="btn-cancel-edit"
+                                style="display: none;">Cancel Edit</button>
                         </div>
                     </form>
                 </div>
@@ -1047,7 +1065,8 @@
                             <div class="cms-form-group">
                                 <label>Category Thumbnail Photo</label>
                                 <div class="photo-picker-box" id="category-picker-box">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b28652" stroke-width="1.5" id="category-picker-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b28652"
+                                        stroke-width="1.5" id="category-picker-icon">
                                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                         <polyline points="17 8 12 3 7 8"></polyline>
                                         <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -1057,12 +1076,13 @@
                                     </div>
                                     <input type="file" id="category-image-file" accept="image/*" required>
                                 </div>
-                                <div class="uploaded-previews-container" id="category-preview-container" style="display: none;"></div>
+                                <div class="uploaded-previews-container" id="category-preview-container"
+                                    style="display: none;"></div>
                             </div>
                             <button type="submit" class="btn-add-product">Add Category</button>
                         </form>
                     </div>
-                    
+
                     <!-- Right: List Categories -->
                     <div class="cms-inventory-card">
                         <h3>Active Categories Directory</h3>
@@ -1077,11 +1097,13 @@
             <div class="tab-panel" id="panel-settings">
                 <div class="cms-form-card" style="max-width: 500px; margin: 0 auto;">
                     <h3>Admin Security Settings</h3>
-                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">Configure the authorization credentials used to log into this administrative manager.</p>
+                    <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 24px;">Configure the
+                        authorization credentials used to log into this administrative manager.</p>
                     <form id="settings-form" class="cms-form">
                         <div class="cms-form-group">
                             <label for="settings-password">Admin Authorization Passcode</label>
-                            <input type="password" id="settings-password" placeholder="Enter new passcode to save" required>
+                            <input type="password" id="settings-password" placeholder="Enter new passcode to save"
+                                required>
                         </div>
                         <button type="submit" class="btn-add-product">Save Passcode</button>
                     </form>
@@ -1107,7 +1129,7 @@
 
             // Login recovery subviews
             const loginView = document.getElementById('login-view');
-            
+
             // Tab buttons
             const tabEnquiriesBtn = document.getElementById('tab-enquiries-btn');
             const tabInventoryBtn = document.getElementById('tab-inventory-btn');
@@ -1175,7 +1197,7 @@
                 loginGate.style.display = 'none';
                 dashboard.style.display = 'block';
                 logoutBtn.style.display = 'block';
-                
+
                 // Initial loads
                 renderInquiries();
                 renderInventory();
@@ -1200,7 +1222,7 @@
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!activeSettings) await loadGateSettings();
-                
+
                 const key = passwordInput.value;
                 if (key === activeSettings.password) {
                     sessionStorage.setItem('admin_authenticated', 'true');
@@ -1245,7 +1267,7 @@
             async function renderInquiries() {
                 const list = await window.ProductCatalog.getEnquiries();
                 currentEnquiries = list;
-                
+
                 metricTotal.textContent = list.length;
                 metricWa.textContent = list.filter(r => r.channel === 'WhatsApp').length;
                 metricEmail.textContent = list.filter(r => r.channel === 'Email').length;
@@ -1287,7 +1309,7 @@
                 filtered.forEach(req => {
                     const tr = document.createElement('tr');
                     const statusClass = (req.status || 'Pending').toLowerCase().replace(' ', '');
-                    
+
                     tr.innerHTML = `
                         <td>${req.timestamp}</td>
                         <td style="font-weight: 500;">${req.product}</td>
@@ -1358,19 +1380,19 @@
                 uploadedBase64Images.forEach((base64, index) => {
                     const wrapper = document.createElement('div');
                     wrapper.className = 'preview-thumbnail-wrapper';
-                    
+
                     wrapper.innerHTML = `
                         <img src="${base64}" alt="Preview ${index + 1}">
                         <button type="button" class="btn-remove-preview" data-index="${index}" title="Remove photo">&times;</button>
                     `;
-                    
+
                     wrapper.querySelector('.btn-remove-preview').addEventListener('click', (e) => {
                         e.stopPropagation();
                         const idx = parseInt(e.target.getAttribute('data-index'));
                         uploadedBase64Images.splice(idx, 1);
                         renderUploadPreviews();
                     });
-                    
+
                     previewsContainer.appendChild(wrapper);
                 });
             };
@@ -1418,7 +1440,7 @@
                 uploadedBase64Images = [];
                 editingProductId = null;
                 renderUploadPreviews();
-                
+
                 formPanelTitle.textContent = 'Add New Product';
                 btnSubmitProduct.textContent = 'Add Product To Floor';
                 btnCancelEdit.style.display = 'none';
@@ -1448,7 +1470,7 @@
                 currentProducts = catalog;
 
                 const categories = await window.ProductCatalog.getCategories();
-                
+
                 // Populate category filters select dropdown
                 const selectedFilter = inventoryCategoryFilter.value;
                 inventoryCategoryFilter.innerHTML = '<option value="all">All Categories</option>';
@@ -1483,9 +1505,9 @@
                 filtered.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'inventory-item';
-                    
+
                     const mainImg = item.images && item.images.length > 0 ? item.images[0] : item.img;
-                    
+
                     div.innerHTML = `
                         <div class="inventory-item-details">
                             <img src="${mainImg}" alt="${item.name}" class="inventory-item-img">
@@ -1507,7 +1529,7 @@
                     btn.addEventListener('click', async (e) => {
                         const id = e.target.getAttribute('data-id');
                         const itemName = e.target.closest('.inventory-item').querySelector('.inventory-item-name').textContent;
-                        
+
                         if (confirm(`Are you sure you want to delete "${itemName}"?`)) {
                             if (editingProductId === id) {
                                 resetFormState();
@@ -1539,10 +1561,10 @@
                         document.getElementById('product-quantity').value = product.quantity;
                         document.getElementById('product-desc').value = product.desc || product.desc_text || '';
 
-                        uploadedBase64Images = product.images && product.images.length > 0 
-                            ? [...product.images] 
+                        uploadedBase64Images = product.images && product.images.length > 0
+                            ? [...product.images]
                             : [product.img];
-                        
+
                         renderUploadPreviews();
                         fileInput.removeAttribute('required');
                         editingProductId = id;
@@ -1591,7 +1613,7 @@
                     await window.ProductCatalog.add(newItem);
                     alert(`"${name}" added to catalog floor!`);
                 }
-                
+
                 resetFormState();
                 switchTab(tabInventoryBtn);
                 if (window.opener && window.opener.refreshGalleryGrid) {
@@ -1622,7 +1644,7 @@
                         </div>
                     `;
                     categoryPreviewContainer.style.display = 'block';
-                    
+
                     document.getElementById('btn-remove-category-img').addEventListener('click', () => {
                         categoryBase64Img = '';
                         categoryPreviewContainer.style.display = 'none';
@@ -1635,7 +1657,7 @@
             async function renderCategories() {
                 const list = await window.ProductCatalog.getCategories();
                 categoriesList.innerHTML = '';
-                
+
                 list.forEach(cat => {
                     const row = document.createElement('div');
                     row.className = 'category-item-row';
@@ -1685,7 +1707,7 @@
                 categoryBase64Img = '';
                 categoryPreviewContainer.style.display = 'none';
                 await renderCategories();
-                
+
                 if (window.opener && window.opener.refreshGalleryGrid) {
                     window.opener.refreshGalleryGrid();
                 }
@@ -1721,4 +1743,5 @@
         }
     </script>
 </body>
+
 </html>
