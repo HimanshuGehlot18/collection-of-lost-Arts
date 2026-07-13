@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collection of Lost Arts &middot; Jodhpur</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="components/modal/modal.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="#home" class="brand-logo">
+                <div class="logo-arch">
+                    <svg class="arch-svg" width="36" height="44" viewBox="0 0 40 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 46V20C4 11.1634 11.1634 4 20 4C28.8366 4 36 11.1634 36 20V46" stroke="#b28652" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M10 46V20C10 14.4772 14.4772 10 20 10C25.5228 10 30 14.4772 30 20V46" stroke="#b28652" stroke-width="1.5" stroke-linecap="round"/>
+                        <line x1="2" y1="46" x2="38" y2="46" stroke="#b28652" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-title-1">Collection of</span>
+                    <span class="logo-title-2">Lost Arts</span>
+                    <span class="logo-subtitle">JODHPUR &middot; EST. HANDICRAFT</span>
+                </div>
+            </a>
+
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                    <li><a href="#services" class="nav-link">Services</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <a href="#contact" class="btn-enquiry">Send Enquiry</a>
+                <button class="menu-toggle" aria-label="Toggle Menu">
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                    <span class="hamburger-bar"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO SECTION -->
+        <section id="home" class="hero-section">
+            <div class="hero-container">
+                <h1 class="hero-heading">Crafts that time <span class="accent-text">forgot</span>,<br>made to be found again.</h1>
+                <p class="hero-description">
+                    Hand-finished brass, carved stone and forged iron pieces from the workshops of Jodhpur &mdash; each one built the old way, for homes that still value it.
+                </p>
+                <div class="hero-actions">
+                    <a href="#gallery" class="btn btn-primary">View Gallery</a>
+                    <a href="#services" class="btn btn-secondary">Our Services</a>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- TOP CATEGORIES SECTION -->
+        <section id="categories" class="categories-section">
+            <div class="container">
+                <div class="section-header text-center">
+                    <span class="section-category">COLLECTIONS</span>
+                    <h2 class="section-heading">Top Categories</h2>
+                </div>
+                
+                <div class="categories-grid" id="categories-grid">
+                    <!-- Categories are rendered dynamically from products-db.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY SECTION -->
+        <section id="gallery" class="gallery-section">
+            <div class="container">
+                <div class="gallery-header-row">
+                    <div class="gallery-title-block">
+                        <span class="section-category">GALLERY</span>
+                        <h2 class="section-heading">A few pieces from the floor</h2>
+                    </div>
+                    <div class="gallery-action-block">
+                        <a href="#contact" class="btn btn-secondary">View Full Gallery</a>
+                    </div>
+                </div>
+
+                <!-- Gallery Filter Buttons -->
+                <div class="gallery-filters" id="gallery-filters">
+                    <!-- Filters are rendered dynamically from products-db.js -->
+                </div>
+
+                <div class="product-grid" id="product-grid">
+                    <!-- Products are rendered dynamically from products-db.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICES SECTION -->
+        <section id="services" class="services-section">
+            <div class="container">
+                <span class="section-category">SERVICES</span>
+                <h2 class="section-heading">Our Services</h2>
+                
+                <div class="services-grid">
+                    <!-- Service 1: Worldwide Shipping -->
+                    <div class="service-card-item">
+                        <div class="service-icon-box">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b28652" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                        </div>
+                        <div class="service-text-content">
+                            <h3 class="service-card-title">Worldwide Shipping</h3>
+                            <p class="service-card-desc">Safe and reliable international delivery with secure packaging and tracking.</p>
+                        </div>
+                    </div>
+
+                    <!-- Service 2: Premium Craftsmanship -->
+                    <div class="service-card-item">
+                        <div class="service-icon-box">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b28652" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                            </svg>
+                        </div>
+                        <div class="service-text-content">
+                            <h3 class="service-card-title">Premium Craftsmanship</h3>
+                            <p class="service-card-desc">Handcrafted brass, stone, and iron products made by skilled artisans using high-quality materials.</p>
+                        </div>
+                    </div>
+
+                    <!-- Service 3: Authentic Heritage -->
+                    <div class="service-card-item">
+                        <div class="service-icon-box">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b28652" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 22V10c0-4.4 3.6-8 8-8s8 3.6 8 8v12"></path>
+                                <path d="M8 22V12c0-2.2 1.8-4 4-4s4 1.8 4 4v10"></path>
+                                <line x1="2" y1="22" x2="22" y2="22"></line>
+                            </svg>
+                        </div>
+                        <div class="service-text-content">
+                            <h3 class="service-card-title">Authentic Heritage</h3>
+                            <p class="service-card-desc">Unique Rajasthani and traditional Indian antique pieces with timeless craftsmanship and cultural value.</p>
+                        </div>
+                    </div>
+
+                    <!-- Service 4: Custom Orders & Bulk -->
+                    <div class="service-card-item">
+                        <div class="service-icon-box">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#b28652" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                                <path d="M2 17l10 5 10-5"></path>
+                                <path d="M2 12l10 5 10-5"></path>
+                            </svg>
+                        </div>
+                        <div class="service-text-content">
+                            <h3 class="service-card-title">Custom &amp; Bulk Orders</h3>
+                            <p class="service-card-desc">Personalized designs and wholesale orders for homes, hotels, restaurants, architects, and interior designers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT US SECTION -->
+        <section id="contact" class="contact-section">
+            <div class="container">
+                <div class="contact-grid">
+                    <!-- Address and details -->
+                    <div class="contact-details">
+                        <span class="section-category">CONTACT US</span>
+                        <h2 class="section-heading">Visit the workshop</h2>
+                        
+                        <div class="details-list">
+                            <div class="details-item">
+                                <span class="details-label">Address</span>
+                                <p class="details-value">Opposite AIIMS 6th Road, Behind Krishna Dharamkata, Plot No. 3, Jodhpur 342005, Rajasthan, India</p>
+                            </div>
+                            <div class="details-item">
+                                <span class="details-label">Phone</span>
+                                <p class="details-value"><a href="tel:+918946866094">+91 89468 66094</a></p>
+                            </div>
+                            <div class="details-item">
+                                <span class="details-label">Hours</span>
+                                <p class="details-value">Mon &ndash; Sat, 10am &ndash; 7pm</p>
+                            </div>
+                            <div class="details-item">
+                                <span class="details-label">Email</span>
+                                <p class="details-value"><a href="mailto:hello@collectionoflostarts.com">hello@collectionoflostarts.com</a></p>
+                            </div>
+                        </div>
+
+                        <!-- Custom Map Placeholder -->
+                        <a href="https://maps.app.goo.gl/c3vkLZQspcWy4iGD8" target="_blank" rel="noopener noreferrer" style="text-decoration: none; display: block;" title="Open location in Google Maps">
+                            <div class="map-placeholder">
+                                <div class="map-inner">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b28652" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    <span class="map-text">CLICK TO VIEW WORKSHOP LOCATION ON GOOGLE MAPS</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Enquiry Form -->
+                    <div class="contact-form-wrapper">
+                        <form id="enquiry-form" class="enquiry-form">
+                            <div class="form-group">
+                                <input type="text" id="name" name="name" placeholder="Your name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="email" name="email" placeholder="Phone or email" required>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="message" name="message" placeholder="What are you looking for? (brass / stone / iron)" rows="4" required></textarea>
+                            </div>
+                            <div class="form-action-row">
+                                <button type="submit" class="btn-submit">Send Enquiry</button>
+                                <div class="form-social-links">
+                                    <a href="https://maps.app.goo.gl/c3vkLZQspcWy4iGD8" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="Find us on Google Maps">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                    </a>
+                                    <a href="https://www.instagram.com/collection_of_lost_arts?igsh=MWJ0N3B4eHA2MGhzeA==" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="Follow us on Instagram">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                        </svg>
+                                    </a>
+                                    <a href="https://www.facebook.com/div1406" target="_blank" rel="noopener noreferrer" class="social-icon-btn" title="Like us on Facebook">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="form-message" class="form-message"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <span class="footer-copyright">COLLECTION OF LOST ARTS &copy; 2026</span>
+            <div class="footer-links">
+                <a href="#home">HOME</a>
+                <a href="#gallery">GALLERY</a>
+                <a href="#services">SERVICE</a>
+                <a href="#contact">CONTACT US</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- UNIFIED PRODUCT DETAILS & ENQUIRY MODAL -->
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal-content product-modal-content">
+            <button class="modal-close" id="product-modal-close">&times;</button>
+            
+            <!-- VIEW 1: PRODUCT DETAILS VIEW -->
+            <div id="modal-details-view" class="modal-view-container active">
+                <div class="product-details-grid">
+                    <div class="product-details-media">
+                        <div class="arch-frame modal-arch-frame slider-container">
+                            <div class="slider-wrapper" id="modal-slider-wrapper">
+                                <!-- Slides injected dynamically -->
+                            </div>
+                            <button type="button" class="slider-arrow prev-arrow" id="modal-prev-arrow">&larr;</button>
+                            <button type="button" class="slider-arrow next-arrow" id="modal-next-arrow">&rarr;</button>
+                            <div class="slider-dots" id="modal-slider-dots"></div>
+                        </div>
+                    </div>
+                    <div class="product-details-info">
+                        <span id="modal-product-material" class="section-category">MATERIAL</span>
+                        <h3 id="modal-product-title" class="product-details-title">Product Name</h3>
+                        <p id="modal-product-desc" class="product-details-desc">Description of the craft piece.</p>
+                        
+                        <div class="specs-table">
+                            <div class="spec-row">
+                                <span class="spec-label">Size</span>
+                                <span id="modal-product-size" class="spec-value">-</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Price</span>
+                                <span id="modal-product-price" class="spec-value">-</span>
+                            </div>
+                            <div class="spec-row">
+                                <span class="spec-label">Quantity</span>
+                                <span id="modal-product-qty" class="spec-value">-</span>
+                            </div>
+                        </div>
+                        
+                        <div class="modal-action-row">
+                            <button id="modal-to-enquiry-btn" class="modal-submit-btn">Enquire via Email</button>
+                            <button id="modal-whatsapp-btn" class="modal-whatsapp-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.59-4.846c1.6.95 2.51 1.346 4.361 1.347 5.51.003 9.993-4.475 9.996-9.981.001-2.67-1.036-5.178-2.925-7.064C16.14 1.57 13.64 .531 10.97 .531c-5.511 0-10.002 4.48-10.005 9.986-.001 1.838.48 3.268 1.39 4.887L1.31 21.053l5.337-1.399z"/>
+                                </svg>
+                                Inquire on WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- VIEW 2: ENQUIRY FORM VIEW -->
+            <div id="modal-form-view" class="modal-view-container">
+                <button id="modal-back-btn" class="modal-back-link">&larr; Back to Details</button>
+                <div class="modal-header">
+                    <h3 class="modal-title">Send Enquiry</h3>
+                    <p class="modal-subtitle">Inquire about details, packing, or commission requests.</p>
+                </div>
+                <form id="modal-enquiry-form" class="modal-form">
+                    <div class="form-group">
+                        <label for="modal-item" class="form-label">Item / Subject of Interest</label>
+                        <input type="text" id="modal-item" name="item" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-name" class="form-label">Your Name</label>
+                        <input type="text" id="modal-name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-email" class="form-label">Phone or Email</label>
+                        <input type="text" id="modal-email" name="email" placeholder="Where should we contact you?" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-message" class="form-label">Your Message</label>
+                        <textarea id="modal-message" name="message" placeholder="Describe details, size specifications, or order volume..." rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="modal-submit-btn">Submit Enquiry</button>
+                    <div id="modal-form-message" class="form-message"></div>
+                </form>
+            </div>
+
+            <!-- VIEW 3: WHATSAPP CLIENT NUMBER PROMPT VIEW -->
+            <div id="modal-whatsapp-view" class="modal-view-container">
+                <button id="modal-wa-back-btn" class="modal-back-link">&larr; Back to Details</button>
+                <div class="modal-header">
+                    <h3 class="modal-title">WhatsApp Inquiry</h3>
+                    <p class="modal-subtitle">Provide your contact number. We will log this request and open your WhatsApp chat.</p>
+                </div>
+                <form id="modal-whatsapp-form" class="modal-form">
+                    <div class="form-group">
+                        <label for="wa-item" class="form-label">Product Name</label>
+                        <input type="text" id="wa-item" name="item" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="wa-client-number" class="form-label">Your WhatsApp / Phone Number</label>
+                        <input type="text" id="wa-client-number" name="client_number" placeholder="e.g. +91 98765 43210" required>
+                    </div>
+                    <button type="submit" class="modal-whatsapp-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.59-4.846c1.6.95 2.51 1.346 4.361 1.347 5.51.003 9.993-4.475 9.996-9.981.001-2.67-1.036-5.178-2.925-7.064C16.14 1.57 13.64 .531 10.97 .531c-5.511 0-10.002 4.48-10.005 9.986-.001 1.838.48 3.268 1.39 4.887L1.31 21.053l5.337-1.399z"/>
+                        </svg>
+                        Open WhatsApp Chat
+                    </button>
+                    <div id="wa-form-message" class="form-message"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/918946866094" class="floating-whatsapp-btn" target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.458 5.704 1.459h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="components/modal/db-config.js"></script>
+    <script src="components/modal/products-db.js"></script>
+    <script src="main.js"></script>
+    <script src="components/modal/modal.js"></script>
+</body>
+</html>

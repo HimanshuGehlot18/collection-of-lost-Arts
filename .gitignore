@@ -1,0 +1,19 @@
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Local test and scratch files
+test_supabase.js
+node_modules/
+.env
+.env.local
