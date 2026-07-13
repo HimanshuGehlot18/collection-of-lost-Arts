@@ -1,8 +1,13 @@
 {
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/admin",
-      "destination": "/lostart-admin/index.html"
+      "destination": "/lostart-admin"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/lostart-admin/:path*"
     }
   ]
 }
