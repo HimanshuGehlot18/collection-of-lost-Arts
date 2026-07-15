@@ -178,9 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = mailtoUrl;
     };
 
-    const sendWhatsAppMessage = (productName, clientNumber) => {
+    const sendWhatsAppMessage = async (productName, clientNumber) => {
         const adminWhatsAppNumber = "918946866094"; // REPLACE WITH THE OWNER'S REAL WHATSAPP PHONE NUMBER (with country code, no +)
-        const catalog = window.ProductCatalog.getAll();
+        const catalog = await window.ProductCatalog.getAll();
         const product = catalog.find(item => item.name === productName);
         
         let message = `Hello, I am interested in inquiring about this product from Collection of Lost Arts:\n\n`;
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await window.ProductCatalog.addEnquiry(item, clientNumber, 'WhatsApp');
                 
                 // Open WhatsApp chat in new window
-                sendWhatsAppMessage(item, clientNumber);
+                await sendWhatsAppMessage(item, clientNumber);
                 
                 showWaFeedback(`Opening WhatsApp chat... Thank you!`, 'success');
                 
