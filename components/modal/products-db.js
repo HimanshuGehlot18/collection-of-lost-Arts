@@ -555,7 +555,7 @@
             const defaultSettings = {
                 id: 'current_settings',
                 password: 'admin123',
-                email: 'himanshugehlot521@gmail.com',
+                email: 'sonidiv1993@gmail.com',
                 phone: '+91 86195 59916',
                 web3forms_key: ''
             };
@@ -570,7 +570,7 @@
                     
                     if (data) {
                         // Upgrade Cloud if matching old default or typo
-                        if (data.email === 'admin@lostart.com' || data.phone === '+91 89468 66094' || data.email === 'himanshugehlot521@gamil.com') {
+                        if (data.email === 'admin@lostart.com' || data.phone === '+91 89468 66094' || data.email === 'himanshugehlot521@gamil.com' || data.email === 'himanshugehlot521@gmail.com') {
                             data.email = defaultSettings.email;
                             data.phone = defaultSettings.phone;
                             await supabase.from('admin_settings').upsert([data]);
@@ -596,7 +596,7 @@
                 if (local) {
                     const parsed = JSON.parse(local);
                     // Upgrade/migration path: ensure email and phone are updated to new default
-                    if (parsed.email === 'admin@lostart.com' || parsed.phone === '+91 89468 66094' || parsed.email === 'himanshugehlot521@gamil.com' || !parsed.email || !parsed.phone || typeof parsed.web3forms_key === 'undefined') {
+                    if (parsed.email === 'admin@lostart.com' || parsed.phone === '+91 89468 66094' || parsed.email === 'himanshugehlot521@gamil.com' || parsed.email === 'himanshugehlot521@gmail.com' || !parsed.email || !parsed.phone || typeof parsed.web3forms_key === 'undefined') {
                         parsed.email = defaultSettings.email;
                         parsed.phone = defaultSettings.phone;
                         parsed.web3forms_key = parsed.web3forms_key || '';

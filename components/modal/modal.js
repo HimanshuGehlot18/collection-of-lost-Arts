@@ -169,8 +169,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const sendEmail = (name, contact, subject, message) => {
-        const receiver = "hello@collectionoflostarts.com";
+    const sendEmail = async (name, contact, subject, message) => {
+        let receiver = "sonidiv1993@gmail.com";
+        try {
+            const settings = await window.ProductCatalog.getSettings();
+            if (settings && settings.email) {
+                receiver = settings.email;
+            }
+        } catch (err) {
+            console.warn('[Modal] Failed to get receiver email, using fallback:', err);
+        }
         const emailSubject = `Enquiry: ${subject}`;
         const emailBody = `Name: ${name}\nContact: ${contact}\n\nEnquiry details:\n${message}\n\n---\nSent from Website Contact System.`;
         
@@ -286,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(async () => {
                 await window.ProductCatalog.addEnquiry(item, email, 'Email');
-                sendEmail(name, email, item, message);
+                await sendEmail(name, email, item, message);
                 showModalFeedback(`Opening mail client... Thank you, ${name}!`, 'success');
                 
                 setTimeout(() => {
@@ -354,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             setTimeout(async () => {
                 await window.ProductCatalog.addEnquiry('General Workshop Enquiry', email, 'Email');
-                sendEmail(name, email, 'General Workshop Enquiry', message);
+                await sendEmail(name, email, 'General Workshop Enquiry', message);
                 showInlineFeedback(`Thank you, ${name}! Mail client is opening to send your enquiry.`, 'success');
                 inlineForm.reset();
                 submitBtn.textContent = 'Send Enquiry';

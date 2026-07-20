@@ -52,7 +52,7 @@ The website operates as a fully client-side application using vanilla HTML, CSS,
 3. Open **`http://localhost:3000`** in your browser.
 4. Access the admin dashboard at **`http://localhost:3000/lostart-admin`**. The default credentials are:
    * **Passcode**: `admin123`
-   * **Backup coordinates**: `himanshugehlot521@gmail.com` / `+91 86195 59916`
+   * **Backup coordinates**: `sonidiv1993@gmail.com` / `+91 86195 59916`
 
 ---
 
@@ -113,7 +113,7 @@ create table enquiries (
 create table admin_settings (
   id text primary key default 'current_settings',
   password text not null default 'admin123',
-  email text not null default 'himanshugehlot521@gmail.com',
+  email text not null default 'sonidiv1993@gmail.com',
   phone text not null default '+91 86195 59916',
   web3forms_key text default '',
   updated_at timestamp with time zone default timezone('utc'::text, now())
