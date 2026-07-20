@@ -1550,8 +1550,11 @@
                         const product = currentProducts.find(item => item.id === id);
                         if (!product) return;
 
-                        // Switch to Add/Edit form tab
+                        // Switch to Add/Edit form tab first (clears previous form state)
                         switchTab(tabAddProductBtn);
+
+                        // Make sure category select is populated before setting fields
+                        await populateCategorySelect();
 
                         // Load fields
                         document.getElementById('product-name').value = product.name;

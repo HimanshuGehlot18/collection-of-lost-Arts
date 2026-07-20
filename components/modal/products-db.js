@@ -215,6 +215,20 @@
                         });
                     }
                     
+                    // Check if categories are also empty to determine if this is a fresh setup.
+                    // If categories already exist, the user intentionally deleted all products.
+                    try {
+                        const { data: catData } = await supabase
+                            .from('categories')
+                            .select('id')
+                            .limit(1);
+                        if (catData && catData.length > 0) {
+                            return [];
+                        }
+                    } catch (catErr) {
+                        console.warn('[Database] Failed to check categories for seeding status:', catErr);
+                    }
+                    
                     // Seed cloud DB with defaults if completely empty
                     console.log('[Database] Cloud database empty. Seeding defaults...');
                     await this.seedCloudCatalog(defaultCatalog);
