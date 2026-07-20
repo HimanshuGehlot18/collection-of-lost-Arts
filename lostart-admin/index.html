@@ -546,7 +546,8 @@
         .preview-thumbnail-wrapper img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background-color: var(--bg-cream);
         }
 
         .btn-remove-preview {
@@ -664,7 +665,8 @@
         .inventory-item-img {
             width: 100%;
             height: 160px;
-            object-fit: cover;
+            object-fit: contain;
+            background-color: var(--bg-cream);
             border-radius: 6px;
             border: 1px solid var(--border-light);
         }
@@ -999,24 +1001,23 @@
 
                         <div class="cms-form-group">
                             <label for="product-size">Dimensions / Size</label>
-                            <input type="text" id="product-size" placeholder="e.g. Height: 12 inches" required>
+                            <input type="text" id="product-size" placeholder="e.g. Height: 12 inches">
                         </div>
 
                         <div class="cms-form-group">
                             <label for="product-price">Price Display</label>
-                            <input type="text" id="product-price" placeholder="e.g. ₹3,200 / $39" required>
+                            <input type="text" id="product-price" placeholder="e.g. ₹3,200 / $39">
                         </div>
 
                         <div class="cms-form-group">
                             <label for="product-quantity">Stock Availability / Lead Time</label>
-                            <input type="text" id="product-quantity" placeholder="e.g. In stock (5 items)" required>
+                            <input type="text" id="product-quantity" placeholder="e.g. In stock (5 items)">
                         </div>
 
                         <div class="cms-form-group">
                             <label for="product-desc">Craft Description</label>
                             <textarea id="product-desc" rows="3"
-                                placeholder="Artistic details, history, materials, polish finish..."
-                                required></textarea>
+                                placeholder="Artistic details, history, materials, polish finish..."></textarea>
                         </div>
 
                         <!-- Photo Selector Uploader (Base64 conversion) -->
@@ -1032,7 +1033,7 @@
                                 <div class="photo-picker-label" id="photo-picker-label">
                                     <span>Click to Upload Photos</span> or drag files here
                                 </div>
-                                <input type="file" id="product-image-file" accept="image/*" multiple required>
+                                <input type="file" id="product-image-file" accept="image/*" multiple>
                             </div>
                             <div class="uploaded-previews-container" id="uploaded-previews-container"></div>
                         </div>
@@ -1414,18 +1415,25 @@
                 }
 
                 let processedCount = 0;
-
-                filesToUpload.forEach(file => {
+                const validFiles = filesToUpload.filter(file => {
                     if (file.size > 4 * 1024 * 1024) {
                         alert(`Image "${file.name}" is too large. Please select compressed images under 4MB.`);
-                        return;
+                        return false;
                     }
+                    return true;
+                });
 
+                if (validFiles.length === 0) {
+                    fileInput.value = '';
+                    return;
+                }
+
+                validFiles.forEach(file => {
                     const reader = new FileReader();
                     reader.onload = (event) => {
                         uploadedBase64Images.push(event.target.result);
                         processedCount++;
-                        if (processedCount === filesToUpload.length) {
+                        if (processedCount === validFiles.length) {
                             renderUploadPreviews();
                             fileInput.value = '';
                         }
@@ -1444,7 +1452,6 @@
                 formPanelTitle.textContent = 'Add New Product';
                 btnSubmitProduct.textContent = 'Add Product To Floor';
                 btnCancelEdit.style.display = 'none';
-                fileInput.setAttribute('required', 'required');
             };
 
             btnCancelEdit.addEventListener('click', () => {
@@ -1513,7 +1520,7 @@
                             <img src="${mainImg}" alt="${item.name}" class="inventory-item-img">
                             <div class="inventory-item-info">
                                 <h4 class="inventory-item-name">${item.name}</h4>
-                                <div class="inventory-item-meta">${item.material} &middot; ${item.price} &middot; (${item.images ? item.images.length : 1} photos)</div>
+                                <div class="inventory-item-meta">${item.material}${item.price ? ` &middot; ${item.price}` : ''} &middot; (${item.images ? item.images.length : 1} photos)</div>
                             </div>
                         </div>
                         <div class="inventory-item-actions">
@@ -1559,9 +1566,9 @@
                         // Load fields
                         document.getElementById('product-name').value = product.name;
                         document.getElementById('product-material').value = product.material;
-                        document.getElementById('product-size').value = product.size;
-                        document.getElementById('product-price').value = product.price;
-                        document.getElementById('product-quantity').value = product.quantity;
+                        document.getElementById('product-size').value = product.size || '';
+                        document.getElementById('product-price').value = product.price || '';
+                        document.getElementById('product-quantity').value = product.quantity || '';
                         document.getElementById('product-desc').value = product.desc || product.desc_text || '';
 
                         uploadedBase64Images = product.images && product.images.length > 0
@@ -1569,7 +1576,6 @@
                             : [product.img];
 
                         renderUploadPreviews();
-                        fileInput.removeAttribute('required');
                         editingProductId = id;
 
                         formPanelTitle.textContent = 'Edit Product Details';

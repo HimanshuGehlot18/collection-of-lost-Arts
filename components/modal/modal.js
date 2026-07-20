@@ -74,10 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Populate modal text details
         modalMaterial.textContent = data.material.toUpperCase();
         modalTitle.textContent = productName;
-        modalDesc.textContent = data.desc;
-        modalSize.textContent = data.size;
-        modalPrice.textContent = data.price;
-        modalQty.textContent = data.quantity;
+        modalDesc.textContent = data.desc || '';
+        modalSize.textContent = data.size || '-';
+        modalPrice.textContent = data.price || '-';
+        modalQty.textContent = data.quantity || '-';
         
         // Setup form subjects
         modalItemInput.value = productName;
@@ -195,8 +195,11 @@ document.addEventListener('DOMContentLoaded', () => {
         message += `*Product Name:* ${productName}\n`;
         
         if (product) {
-            message += `*Size:* ${product.size}\n`;
-            message += `*Price:* ${product.price}\n`;
+            if (product.size) message += `*Size:* ${product.size}\n`;
+            if (product.price) message += `*Price:* ${product.price}\n`;
+            if (product.quantity) message += `*Availability:* ${product.quantity}\n`;
+            const description = product.desc || product.desc_text;
+            if (description) message += `*Description:* ${description}\n`;
             
             // Format photo link dynamically (using window origin so it translates well locally/staged)
             const absolutePhotoUrl = `${window.location.origin}/${product.img}`;
