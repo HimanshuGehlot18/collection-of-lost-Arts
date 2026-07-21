@@ -195,6 +195,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const initHomepage = async () => {
         await renderCategoriesAndFilters();
         await renderGalleryGrid();
+
+        // Update floating WhatsApp button dynamically with settings phone number
+        try {
+            const settings = await window.ProductCatalog.getSettings();
+            if (settings && settings.phone) {
+                const cleanPhone = settings.phone.replace(/\D/g, '');
+                const floatingWaBtn = document.querySelector('.floating-whatsapp-btn');
+                if (floatingWaBtn) {
+                    floatingWaBtn.href = `https://wa.me/${cleanPhone}`;
+                }
+            }
+        } catch (err) {
+            console.warn('[Homepage] Failed to update floating WhatsApp button:', err);
+        }
     };
     initHomepage();
     

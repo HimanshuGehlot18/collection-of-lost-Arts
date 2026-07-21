@@ -1106,7 +1106,21 @@
                             <input type="password" id="settings-password" placeholder="Enter new passcode to save"
                                 required>
                         </div>
-                        <button type="submit" class="btn-add-product">Save Passcode</button>
+                        <div class="cms-form-group">
+                            <label for="settings-email">Admin Contact Email</label>
+                            <input type="email" id="settings-email" placeholder="e.g. owner@example.com"
+                                required>
+                        </div>
+                        <div class="cms-form-group">
+                            <label for="settings-phone">WhatsApp / Phone Number (Include Country Code)</label>
+                            <input type="text" id="settings-phone" placeholder="e.g. +91 98765 43210"
+                                required>
+                        </div>
+                        <div class="cms-form-group">
+                            <label for="settings-web3forms">Web3Forms Access Key</label>
+                            <input type="text" id="settings-web3forms" placeholder="Enter Web3Forms access key">
+                        </div>
+                        <button type="submit" class="btn-add-product">Save Settings</button>
                     </form>
                 </div>
             </div>
@@ -1181,6 +1195,8 @@
             // Security Settings refs
             const settingsForm = document.getElementById('settings-form');
             const settingsPassword = document.getElementById('settings-password');
+            const settingsEmail = document.getElementById('settings-email');
+            const settingsPhone = document.getElementById('settings-phone');
 
             // Session states
             let uploadedBase64Images = [];

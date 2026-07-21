@@ -45,6 +45,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Slider State Variables
     let currentSlideIndex = 0;
     let currentImagesList = [];
+    let currentProduct = null;
+    let activeSettings = null;
+
+    // Prefetch settings on load
+    const prefetchSettings = async () => {
+        try {
+            activeSettings = await window.ProductCatalog.getSettings();
+        } catch (err) {
+            console.warn('[Modal] Failed to prefetch settings:', err);
+        }
+    };
+    prefetchSettings();
 
     // 3. UTILITY FUNCTIONS
 
@@ -70,6 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const catalog = await window.ProductCatalog.getAll();
         const data = catalog.find(item => item.name === productName);
         if (!data) return;
+        
+        currentProduct = data;
         
         // Populate modal text details
         modalMaterial.textContent = data.material.toUpperCase();
@@ -186,23 +200,25 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = mailtoUrl;
     };
 
-    const sendWhatsAppMessage = async (productName, clientNumber) => {
-        const adminWhatsAppNumber = "918946866094"; // REPLACE WITH THE OWNER'S REAL WHATSAPP PHONE NUMBER (with country code, no +)
-        const catalog = await window.ProductCatalog.getAll();
-        const product = catalog.find(item => item.name === productName);
+    const sendWhatsAppMessage = (productName, clientNumber) => {
+        let adminWhatsAppNumber = "918946866094"; // fallback owner number
+        if (activeSettings && activeSettings.phone) {
+            // Strip non-digits for wa.me formatting
+            adminWhatsAppNumber = activeSettings.phone.replace(/\D/g, '');
+        }
         
         let message = `Hello, I am interested in inquiring about this product from Collection of Lost Arts:\n\n`;
         message += `*Product Name:* ${productName}\n`;
         
-        if (product) {
-            if (product.size) message += `*Size:* ${product.size}\n`;
-            if (product.price) message += `*Price:* ${product.price}\n`;
-            if (product.quantity) message += `*Availability:* ${product.quantity}\n`;
-            const description = product.desc || product.desc_text;
+        if (currentProduct) {
+            if (currentProduct.size) message += `*Size:* ${currentProduct.size}\n`;
+            if (currentProduct.price) message += `*Price:* ${currentProduct.price}\n`;
+            if (currentProduct.quantity) message += `*Availability:* ${currentProduct.quantity}\n`;
+            const description = currentProduct.desc || currentProduct.desc_text;
             if (description) message += `*Description:* ${description}\n`;
             
             // Format photo link dynamically (using window origin so it translates well locally/staged)
-            const absolutePhotoUrl = `${window.location.origin}/${product.img}`;
+            const absolutePhotoUrl = `${window.location.origin}/${currentProduct.img}`;
             message += `*Photo Link:* ${absolutePhotoUrl}\n`;
         }
         
@@ -317,10 +333,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const item = document.getElementById('wa-item').value;
             const clientNumber = document.getElementById('wa-client-number').value;
 
+    // Handle modal WhatsApp form submission
+    if (waForm) {
+        waForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const item = document.getElementById('wa-item').value;
+            const clientNumber = document.getElementById('wa-client-number').value;
+
             if (!clientNumber) {
                 showWaFeedback('Please enter your phone number.', 'error');
                 return;
             }
+
+            // Open WhatsApp immediately and synchronously to prevent browser popup blockers
+            sendWhatsAppMessage(item, clientNumber);
 
             const submitBtn = waForm.querySelector('.modal-whatsapp-btn');
             const originalBtnHtml = submitBtn.innerHTML;
@@ -328,11 +355,12 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             setTimeout(async () => {
-                // Log request in cloud DB / Local fallback
-                await window.ProductCatalog.addEnquiry(item, clientNumber, 'WhatsApp');
-                
-                // Open WhatsApp chat in new window
-                await sendWhatsAppMessage(item, clientNumber);
+                // Log request in cloud DB / Local fallback asynchronously in background
+                try {
+                    await window.ProductCatalog.addEnquiry(item, clientNumber, 'WhatsApp');
+                } catch (err) {
+                    console.error('[Modal] Failed to log enquiry:', err);
+                }
                 
                 showWaFeedback(`Opening WhatsApp chat... Thank you!`, 'success');
                 
