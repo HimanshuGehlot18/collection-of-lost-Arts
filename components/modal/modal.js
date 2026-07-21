@@ -333,14 +333,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const item = document.getElementById('wa-item').value;
             const clientNumber = document.getElementById('wa-client-number').value;
 
-    // Handle modal WhatsApp form submission
-    if (waForm) {
-        waForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const item = document.getElementById('wa-item').value;
-            const clientNumber = document.getElementById('wa-client-number').value;
-
             if (!clientNumber) {
                 showWaFeedback('Please enter your phone number.', 'error');
                 return;
