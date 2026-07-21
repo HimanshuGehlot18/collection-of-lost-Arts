@@ -169,6 +169,7 @@
     // Seed/migrate default catalog local database if not present or needs schema changes
     let storedCatalog = null;
     let needsUpgrade = false;
+    let cachedCatalog = null;
     
     try {
         storedCatalog = localStorage.getItem('product_catalog');
@@ -193,7 +194,11 @@
     // Expose unified window database API
     window.ProductCatalog = {
         // --- 1. PRODUCT CATALOG METHODS ---
-        getAll: async function() {
+        getAll: async function(forceRefresh = false) {
+            if (cachedCatalog && !forceRefresh) {
+                return cachedCatalog;
+            }
+
             if (useCloudDB && supabase) {
                 try {
                     const { data, error } = await supabase
@@ -203,7 +208,7 @@
                     if (error) throw error;
                     
                     if (data && data.length > 0) {
-                        return data.map(item => {
+                        cachedCatalog = data.map(item => {
                             // Map database columns back to schema
                             if (item.desc_text) {
                                 item.desc = item.desc_text;
@@ -213,6 +218,7 @@
                             }
                             return item;
                         });
+                        return cachedCatalog;
                     }
                     
                     // Check if categories are also empty to determine if this is a fresh setup.
@@ -223,7 +229,8 @@
                             .select('id')
                             .limit(1);
                         if (catData && catData.length > 0) {
-                            return [];
+                            cachedCatalog = [];
+                            return cachedCatalog;
                         }
                     } catch (catErr) {
                         console.warn('[Database] Failed to check categories for seeding status:', catErr);
@@ -232,7 +239,8 @@
                     // Seed cloud DB with defaults if completely empty
                     console.log('[Database] Cloud database empty. Seeding defaults...');
                     await this.seedCloudCatalog(defaultCatalog);
-                    return defaultCatalog;
+                    cachedCatalog = defaultCatalog;
+                    return cachedCatalog;
                 } catch (err) {
                     console.error('[Database] Supabase query failed, returning LocalStorage fallback:', err);
                 }
@@ -240,7 +248,7 @@
 
             // Local fallback
             const list = JSON.parse(localStorage.getItem('product_catalog') || '[]');
-            return list.map(item => {
+            cachedCatalog = list.map(item => {
                 if (!item.images) {
                     item.images = item.img ? [item.img] : [];
                 }
@@ -249,6 +257,7 @@
                 }
                 return item;
             });
+            return cachedCatalog;
         },
         
         save: function(catalog) {
@@ -257,6 +266,7 @@
         },
         
         add: async function(item) {
+            cachedCatalog = null;
             item.id = 'p_' + Date.now();
             if (useCloudDB && supabase) {
                 try {
@@ -288,6 +298,7 @@
         },
         
         delete: async function(id) {
+            cachedCatalog = null;
             if (useCloudDB && supabase) {
                 try {
                     const { error } = await supabase
@@ -308,6 +319,7 @@
         },
 
         update: async function(id, updatedItem) {
+            cachedCatalog = null;
             if (useCloudDB && supabase) {
                 try {
                     const { error } = await supabase
