@@ -203,8 +203,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const sendWhatsAppMessage = (productName, clientNumber) => {
         let adminWhatsAppNumber = "918946866094"; // fallback owner number
         if (activeSettings && activeSettings.phone) {
-            // Strip non-digits for wa.me formatting
-            adminWhatsAppNumber = activeSettings.phone.replace(/\D/g, '');
+            // Strip non-digits and format for wa.me
+            let cleaned = activeSettings.phone.replace(/\D/g, '');
+            if (cleaned.startsWith('00')) {
+                cleaned = cleaned.substring(2);
+            }
+            if (cleaned.length === 10) {
+                cleaned = '91' + cleaned;
+            }
+            if (cleaned.length === 11 && cleaned.startsWith('0')) {
+                cleaned = '91' + cleaned.substring(1);
+            }
+            adminWhatsAppNumber = cleaned;
         }
         
         let message = `Hello, I am interested in inquiring about this product from Collection of Lost Arts:\n\n`;
@@ -217,14 +227,26 @@ document.addEventListener('DOMContentLoaded', () => {
             const description = currentProduct.desc || currentProduct.desc_text;
             if (description) message += `*Description:* ${description}\n`;
             
-            // Format photo link dynamically (using window origin so it translates well locally/staged)
-            const absolutePhotoUrl = `${window.location.origin}/${currentProduct.img}`;
-            message += `*Photo Link:* ${absolutePhotoUrl}\n`;
+            // Format photo link dynamically
+            if (currentProduct.img) {
+                let absolutePhotoUrl = currentProduct.img;
+                if (currentProduct.img.startsWith('data:')) {
+                    // Do not include large base64 image data in WhatsApp URLs (would exceed URI length limits)
+                    absolutePhotoUrl = '';
+                } else if (!currentProduct.img.startsWith('http://') && !currentProduct.img.startsWith('https://')) {
+                    // Convert relative path to absolute URL
+                    absolutePhotoUrl = `${window.location.origin}/${currentProduct.img.replace(/^\//, '')}`;
+                }
+                
+                if (absolutePhotoUrl) {
+                    message += `*Photo Link:* ${absolutePhotoUrl}\n`;
+                }
+            }
         }
         
         message += `\nMy contact number is: ${clientNumber}\nPlease get back to me. Thank you!`;
         
-        const waUrl = `https://wa.me/${adminWhatsAppNumber}?text=${encodeURIComponent(message)}`;
+        const waUrl = `https://api.whatsapp.com/send?phone=${adminWhatsAppNumber}&text=${encodeURIComponent(message)}`;
         window.open(waUrl, '_blank');
     };
 

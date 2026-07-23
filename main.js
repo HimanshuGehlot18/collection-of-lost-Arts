@@ -200,10 +200,19 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const settings = await window.ProductCatalog.getSettings();
             if (settings && settings.phone) {
-                const cleanPhone = settings.phone.replace(/\D/g, '');
+                let cleaned = settings.phone.replace(/\D/g, '');
+                if (cleaned.startsWith('00')) {
+                    cleaned = cleaned.substring(2);
+                }
+                if (cleaned.length === 10) {
+                    cleaned = '91' + cleaned;
+                }
+                if (cleaned.length === 11 && cleaned.startsWith('0')) {
+                    cleaned = '91' + cleaned.substring(1);
+                }
                 const floatingWaBtn = document.querySelector('.floating-whatsapp-btn');
                 if (floatingWaBtn) {
-                    floatingWaBtn.href = `https://wa.me/${cleanPhone}`;
+                    floatingWaBtn.href = `https://api.whatsapp.com/send?phone=${cleaned}`;
                 }
             }
         } catch (err) {
