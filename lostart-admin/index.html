@@ -941,6 +941,7 @@
                                 style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-light); font-family: var(--font-sans); font-size: 12px; background-color: var(--bg-cream); color: var(--text-primary); outline: none;">
                                 <option value="all">All Products</option>
                             </select>
+                            <button id="export-logs-btn" style="padding: 8px 14px; border-radius: 4px; border: none; font-family: var(--font-sans); font-size: 11px; background-color: var(--accent); color: white; font-weight: 500; cursor: pointer; transition: opacity 0.2s; outline: none; margin-right: 4px;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Export CSV</button>
                             <button id="clear-logs-btn" class="btn-clear-logs">Clear All Logs</button>
                         </div>
                     </div>
@@ -1172,6 +1173,7 @@
             const emptyState = document.getElementById('empty-state');
             const table = document.getElementById('inquiries-table');
             const clearLogsBtn = document.getElementById('clear-logs-btn');
+            const exportLogsBtn = document.getElementById('export-logs-btn');
             const metricTotal = document.getElementById('metric-total');
             const metricWa = document.getElementById('metric-whatsapp');
             const metricEmail = document.getElementById('metric-email');
@@ -1215,6 +1217,36 @@
             let currentEnquiries = [];
             let currentProducts = [];
 
+            // Session Auto-Lock (Inactivity Timer)
+            let inactivityTimeout;
+            const INACTIVITY_LIMIT = 10 * 60 * 1000; // 10 minutes
+
+            const resetInactivityTimer = () => {
+                if (sessionStorage.getItem('admin_authenticated') === 'true') {
+                    clearTimeout(inactivityTimeout);
+                    inactivityTimeout = setTimeout(() => {
+                        alert('Session locked due to inactivity. Please enter passcode again.');
+                        lockDashboard();
+                    }, INACTIVITY_LIMIT);
+                }
+            };
+
+            const setupInactivityListeners = () => {
+                const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+                events.forEach(name => {
+                    document.addEventListener(name, resetInactivityTimer, true);
+                });
+                resetInactivityTimer();
+            };
+
+            const removeInactivityListeners = () => {
+                const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+                events.forEach(name => {
+                    document.removeEventListener(name, resetInactivityTimer, true);
+                });
+                clearTimeout(inactivityTimeout);
+            };
+
             // 1. Password security gate helpers
             const loadGateSettings = async () => {
                 activeSettings = await window.ProductCatalog.getSettings();
@@ -1229,6 +1261,9 @@
                 renderInquiries();
                 renderInventory();
                 populateCategorySelect();
+
+                // Setup inactivity listener
+                setupInactivityListeners();
             };
 
             const lockDashboard = () => {
@@ -1237,6 +1272,9 @@
                 loginGate.style.display = 'flex';
                 passwordInput.value = '';
                 sessionStorage.removeItem('admin_authenticated');
+
+                // Remove inactivity listeners
+                removeInactivityListeners();
             };
 
             // Init Gate Security settings query
@@ -1484,6 +1522,70 @@
                     await window.ProductCatalog.clearAllEnquiries();
                     renderInquiries();
                 }
+            });
+
+            exportLogsBtn.addEventListener('click', () => {
+                if (currentEnquiries.length === 0) {
+                    alert('No enquiries to export.');
+                    return;
+                }
+
+                // Apply active filters
+                const selectedProduct = enquiryProductFilter.value;
+                const fromVal = enquiryDateFrom.value;
+                const toVal = enquiryDateTo.value;
+
+                let filtered = currentEnquiries;
+                if (selectedProduct !== 'all') {
+                    filtered = filtered.filter(r => r.product.split(' ||photo:')[0] === selectedProduct);
+                }
+
+                // Filter by From Date
+                if (fromVal) {
+                    const fromDate = new Date(fromVal);
+                    fromDate.setHours(0, 0, 0, 0);
+                    filtered = filtered.filter(r => {
+                        const d = parseEnquiryDate(r.timestamp);
+                        return d && d >= fromDate;
+                    });
+                }
+
+                // Filter by To Date
+                if (toVal) {
+                    const toDate = new Date(toVal);
+                    toDate.setHours(23, 59, 59, 999);
+                    filtered = filtered.filter(r => {
+                        const d = parseEnquiryDate(r.timestamp);
+                        return d && d <= toDate;
+                    });
+                }
+
+                if (filtered.length === 0) {
+                    alert('No enquiries match the current filters to export.');
+                    return;
+                }
+
+                // Construct CSV with UTF-8 BOM for Excel compatibility
+                let csvContent = "\uFEFF";
+                csvContent += "Date & Time,Product / Subject,Contact,Channel,Status\n";
+
+                filtered.forEach(req => {
+                    const cleanDate = (req.timestamp || '').replace(/"/g, '""');
+                    const cleanProd = (req.product || '').split(' ||photo:')[0].replace(/"/g, '""');
+                    const cleanContact = (req.contact || '').replace(/"/g, '""');
+                    const cleanChannel = (req.channel || '').replace(/"/g, '""');
+                    const cleanStatus = (req.status || '').replace(/"/g, '""');
+                    csvContent += `"${cleanDate}","${cleanProd}","${cleanContact}","${cleanChannel}","${cleanStatus}"\n`;
+                });
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", `lost_art_enquiries_${new Date().toISOString().slice(0,10)}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             });
 
             // 4. Product Image Base64 Upload Previews
