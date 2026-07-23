@@ -60,6 +60,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. UTILITY FUNCTIONS
 
+    const getBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    };
+
     const updateSliderPosition = () => {
         if (sliderWrapper) {
             sliderWrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
@@ -316,17 +325,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle modal email form submission
     if (modalForm) {
-        modalForm.addEventListener('submit', (e) => {
+        modalForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const item = document.getElementById('modal-item').value;
             const name = document.getElementById('modal-name').value;
             const email = document.getElementById('modal-email').value;
             const message = document.getElementById('modal-message').value;
+            const fileInput = document.getElementById('modal-photo');
 
             if (!name || !email || !message) {
                 showModalFeedback('Please fill out all fields.', 'error');
                 return;
+            }
+
+            let base64Photo = null;
+            if (fileInput && fileInput.files.length > 0) {
+                try {
+                    base64Photo = await getBase64(fileInput.files[0]);
+                } catch (err) {
+                    console.error('[Modal] Failed to read photo file:', err);
+                }
             }
 
             const submitBtn = modalForm.querySelector('.modal-submit-btn');
@@ -334,7 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             setTimeout(async () => {
-                await window.ProductCatalog.addEnquiry(item, email, 'Email');
+                const loggedItem = base64Photo ? `${item} ||photo:${base64Photo}` : item;
+                await window.ProductCatalog.addEnquiry(loggedItem, email, 'Email');
                 await sendEmail(name, email, item, message);
                 showModalFeedback(`Opening mail client... Thank you, ${name}!`, 'success');
                 
@@ -389,16 +409,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle inline page contact form submission
     if (inlineForm) {
-        inlineForm.addEventListener('submit', (e) => {
+        inlineForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
+            const fileInput = document.getElementById('inline-photo');
 
             if (!name || !email || !message) {
                 showInlineFeedback('Please fill out all fields.', 'error');
                 return;
+            }
+
+            let base64Photo = null;
+            if (fileInput && fileInput.files.length > 0) {
+                try {
+                    base64Photo = await getBase64(fileInput.files[0]);
+                } catch (err) {
+                    console.error('[Homepage] Failed to read photo file:', err);
+                }
             }
 
             const submitBtn = inlineForm.querySelector('.btn-submit');
@@ -406,7 +436,8 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             setTimeout(async () => {
-                await window.ProductCatalog.addEnquiry('General Workshop Enquiry', email, 'Email');
+                const loggedItem = base64Photo ? `General Workshop Enquiry ||photo:${base64Photo}` : 'General Workshop Enquiry';
+                await window.ProductCatalog.addEnquiry(loggedItem, email, 'Email');
                 await sendEmail(name, email, 'General Workshop Enquiry', message);
                 showInlineFeedback(`Thank you, ${name}! Mail client is opening to send your enquiry.`, 'success');
                 inlineForm.reset();
