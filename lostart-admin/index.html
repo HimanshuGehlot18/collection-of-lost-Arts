@@ -937,11 +937,17 @@
                             <input type="date" id="enquiry-date-to"
                                 style="padding: 6px 10px; border-radius: 4px; border: 1px solid var(--border-light); font-family: var(--font-sans); font-size: 11px; background-color: var(--bg-cream); color: var(--text-primary); outline: none;">
 
+                            <select id="enquiry-category-filter"
+                                style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-light); font-family: var(--font-sans); font-size: 12px; background-color: var(--bg-cream); color: var(--text-primary); outline: none;">
+                                <option value="all">All Categories</option>
+                            </select>
+
                             <select id="enquiry-product-filter"
                                 style="padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-light); font-family: var(--font-sans); font-size: 12px; background-color: var(--bg-cream); color: var(--text-primary); outline: none;">
                                 <option value="all">All Products</option>
                             </select>
-                            <button id="export-logs-btn" style="padding: 8px 14px; border-radius: 4px; border: none; font-family: var(--font-sans); font-size: 11px; background-color: var(--accent); color: white; font-weight: 500; cursor: pointer; transition: opacity 0.2s; outline: none; margin-right: 4px;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Export CSV</button>
+                            <button id="export-logs-btn" style="padding: 8px 14px; border-radius: 4px; border: none; font-family: var(--font-sans); font-size: 11px; background-color: var(--accent); color: white; font-weight: 500; cursor: pointer; transition: opacity 0.2s; outline: none; margin-right: 4px;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Export Filtered</button>
+                            <button id="export-all-logs-btn" style="padding: 8px 14px; border-radius: 4px; border: none; font-family: var(--font-sans); font-size: 11px; background-color: #3b5998; color: white; font-weight: 500; cursor: pointer; transition: opacity 0.2s; outline: none; margin-right: 4px;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Export All</button>
                             <button id="clear-logs-btn" class="btn-clear-logs">Clear All Logs</button>
                         </div>
                     </div>
@@ -1177,7 +1183,9 @@
             const metricTotal = document.getElementById('metric-total');
             const metricWa = document.getElementById('metric-whatsapp');
             const metricEmail = document.getElementById('metric-email');
+            const enquiryCategoryFilter = document.getElementById('enquiry-category-filter');
             const enquiryProductFilter = document.getElementById('enquiry-product-filter');
+            const exportAllLogsBtn = document.getElementById('export-all-logs-btn');
             const enquiryDateFrom = document.getElementById('enquiry-date-from');
             const enquiryDateTo = document.getElementById('enquiry-date-to');
 
@@ -1315,6 +1323,22 @@
                 metricWa.textContent = list.filter(r => r.channel === 'WhatsApp').length;
                 metricEmail.textContent = list.filter(r => r.channel === 'Email').length;
 
+                // Build unique category filter dropdown dynamically
+                const catFilterVal = enquiryCategoryFilter.value;
+                enquiryCategoryFilter.innerHTML = '<option value="all">All Categories</option>';
+                const categories = await window.ProductCatalog.getCategories();
+                categories.forEach(cat => {
+                    const opt = document.createElement('option');
+                    opt.value = cat.id;
+                    opt.textContent = cat.name;
+                    enquiryCategoryFilter.appendChild(opt);
+                });
+                const optGen = document.createElement('option');
+                optGen.value = 'general';
+                optGen.textContent = 'General';
+                enquiryCategoryFilter.appendChild(optGen);
+                enquiryCategoryFilter.value = catFilterVal || 'all';
+
                 // Build unique product interest list for filter dropdown
                 const filterVal = enquiryProductFilter.value;
                 enquiryProductFilter.innerHTML = '<option value="all">All Products</option>';
@@ -1331,16 +1355,37 @@
             };
 
             function applyEnquiryFilter() {
+                const selectedCategory = enquiryCategoryFilter.value;
                 const selectedProduct = enquiryProductFilter.value;
                 const fromVal = enquiryDateFrom.value;
                 const toVal = enquiryDateTo.value;
 
+                // Map product names to categories
+                const productCategoryMap = {};
+                currentProducts.forEach(p => {
+                    productCategoryMap[p.name] = p.material;
+                });
+
                 let filtered = currentEnquiries;
-                if (selectedProduct !== 'all') {
-                    filtered = currentEnquiries.filter(r => r.product.split(' ||photo:')[0] === selectedProduct);
+
+                // 1. Filter by Category
+                if (selectedCategory !== 'all') {
+                    filtered = filtered.filter(r => {
+                        const cleanProdName = r.product.split(' ||photo:')[0];
+                        if (cleanProdName === 'General Workshop Enquiry') {
+                            return selectedCategory === 'general';
+                        }
+                        const cat = productCategoryMap[cleanProdName] || 'general';
+                        return cat === selectedCategory;
+                    });
                 }
 
-                // Filter by From Date
+                // 2. Filter by Product
+                if (selectedProduct !== 'all') {
+                    filtered = filtered.filter(r => r.product.split(' ||photo:')[0] === selectedProduct);
+                }
+
+                // 3. Filter by From Date
                 if (fromVal) {
                     const fromDate = new Date(fromVal);
                     fromDate.setHours(0, 0, 0, 0);
@@ -1350,7 +1395,7 @@
                     });
                 }
 
-                // Filter by To Date
+                // 4. Filter by To Date
                 if (toVal) {
                     const toDate = new Date(toVal);
                     toDate.setHours(23, 59, 59, 999);
@@ -1477,6 +1522,7 @@
                 });
             };
 
+            enquiryCategoryFilter.addEventListener('change', applyEnquiryFilter);
             enquiryProductFilter.addEventListener('change', applyEnquiryFilter);
             enquiryDateFrom.addEventListener('change', applyEnquiryFilter);
             enquiryDateTo.addEventListener('change', applyEnquiryFilter);
@@ -1488,6 +1534,31 @@
                 }
             });
 
+            // Helper for exporting CSV
+            const downloadCSV = (dataList, filename) => {
+                let csvContent = "\uFEFF";
+                csvContent += "Date & Time,Product / Subject,Contact,Channel,Status\n";
+
+                dataList.forEach(req => {
+                    const cleanDate = (req.timestamp || '').replace(/"/g, '""');
+                    const cleanProd = (req.product || '').split(' ||photo:')[0].replace(/"/g, '""');
+                    const cleanContact = (req.contact || '').replace(/"/g, '""');
+                    const cleanChannel = (req.channel || '').replace(/"/g, '""');
+                    const cleanStatus = (req.status || '').replace(/"/g, '""');
+                    csvContent += `"${cleanDate}","${cleanProd}","${cleanContact}","${cleanChannel}","${cleanStatus}"\n`;
+                });
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", filename);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            // Export Filtered Logs
             exportLogsBtn.addEventListener('click', () => {
                 if (currentEnquiries.length === 0) {
                     alert('No enquiries to export.');
@@ -1495,16 +1566,37 @@
                 }
 
                 // Apply active filters
+                const selectedCategory = enquiryCategoryFilter.value;
                 const selectedProduct = enquiryProductFilter.value;
                 const fromVal = enquiryDateFrom.value;
                 const toVal = enquiryDateTo.value;
 
+                // Map product names to categories
+                const productCategoryMap = {};
+                currentProducts.forEach(p => {
+                    productCategoryMap[p.name] = p.material;
+                });
+
                 let filtered = currentEnquiries;
+
+                // 1. Filter by Category
+                if (selectedCategory !== 'all') {
+                    filtered = filtered.filter(r => {
+                        const cleanProdName = r.product.split(' ||photo:')[0];
+                        if (cleanProdName === 'General Workshop Enquiry') {
+                            return selectedCategory === 'general';
+                        }
+                        const cat = productCategoryMap[cleanProdName] || 'general';
+                        return cat === selectedCategory;
+                    });
+                }
+
+                // 2. Filter by Product
                 if (selectedProduct !== 'all') {
                     filtered = filtered.filter(r => r.product.split(' ||photo:')[0] === selectedProduct);
                 }
 
-                // Filter by From Date
+                // 3. Filter by From Date
                 if (fromVal) {
                     const fromDate = new Date(fromVal);
                     fromDate.setHours(0, 0, 0, 0);
@@ -1514,7 +1606,7 @@
                     });
                 }
 
-                // Filter by To Date
+                // 4. Filter by To Date
                 if (toVal) {
                     const toDate = new Date(toVal);
                     toDate.setHours(23, 59, 59, 999);
@@ -1529,27 +1621,16 @@
                     return;
                 }
 
-                // Construct CSV with UTF-8 BOM for Excel compatibility
-                let csvContent = "\uFEFF";
-                csvContent += "Date & Time,Product / Subject,Contact,Channel,Status\n";
+                downloadCSV(filtered, `lost_art_enquiries_filtered_${new Date().toISOString().slice(0,10)}.csv`);
+            });
 
-                filtered.forEach(req => {
-                    const cleanDate = (req.timestamp || '').replace(/"/g, '""');
-                    const cleanProd = (req.product || '').split(' ||photo:')[0].replace(/"/g, '""');
-                    const cleanContact = (req.contact || '').replace(/"/g, '""');
-                    const cleanChannel = (req.channel || '').replace(/"/g, '""');
-                    const cleanStatus = (req.status || '').replace(/"/g, '""');
-                    csvContent += `"${cleanDate}","${cleanProd}","${cleanContact}","${cleanChannel}","${cleanStatus}"\n`;
-                });
-
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement("a");
-                link.setAttribute("href", url);
-                link.setAttribute("download", `lost_art_enquiries_${new Date().toISOString().slice(0,10)}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+            // Export All Logs
+            exportAllLogsBtn.addEventListener('click', () => {
+                if (currentEnquiries.length === 0) {
+                    alert('No enquiries to export.');
+                    return;
+                }
+                downloadCSV(currentEnquiries, `lost_art_enquiries_all_${new Date().toISOString().slice(0,10)}.csv`);
             });
 
             // 4. Product Image Base64 Upload Previews
