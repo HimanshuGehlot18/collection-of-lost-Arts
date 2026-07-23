@@ -97,18 +97,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    let activeCategory = 'all';
-    let searchQuery = '';
-
     const filterGallery = (category) => {
-        if (category !== undefined) {
-            activeCategory = category;
-        }
-
         // Update active class on filter buttons dynamically
         const filterButtons = document.querySelectorAll('.filter-btn');
         filterButtons.forEach(btn => {
-            if (btn.getAttribute('data-filter') === activeCategory) {
+            if (btn.getAttribute('data-filter') === category) {
                 btn.classList.add('active');
             } else {
                 btn.classList.remove('active');
@@ -119,13 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const productCards = document.querySelectorAll('.product-card');
         productCards.forEach(card => {
             const productMaterial = card.getAttribute('data-material');
-            const titleEl = card.querySelector('.product-title');
-            const productName = titleEl ? titleEl.textContent.toLowerCase() : '';
-
-            const matchesCategory = (activeCategory === 'all' || productMaterial === activeCategory);
-            const matchesSearch = (!searchQuery || productName.includes(searchQuery));
-
-            if (matchesCategory && matchesSearch) {
+            if (category === 'all' || productMaterial === category) {
                 card.style.display = 'flex';
                 setTimeout(() => {
                     card.style.opacity = '1';
@@ -208,15 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const initHomepage = async () => {
         await renderCategoriesAndFilters();
         await renderGalleryGrid();
-
-        // Bind instant search input
-        const searchInput = document.getElementById('gallery-search-input');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                searchQuery = e.target.value.toLowerCase().trim();
-                filterGallery();
-            });
-        }
 
         // Update floating WhatsApp button dynamically with settings phone number
         try {

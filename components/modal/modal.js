@@ -339,13 +339,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            let base64Photos = [];
+            let base64Photo = null;
             if (fileInput && fileInput.files.length > 0) {
                 try {
-                    const promises = Array.from(fileInput.files).map(file => getBase64(file));
-                    base64Photos = await Promise.all(promises);
+                    base64Photo = await getBase64(fileInput.files[0]);
                 } catch (err) {
-                    console.error('[Modal] Failed to read photo files:', err);
+                    console.error('[Modal] Failed to read photo file:', err);
                 }
             }
 
@@ -354,9 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             setTimeout(async () => {
-                const loggedItem = base64Photos.length > 0 
-                    ? `${item} ||photo:${base64Photos.join(' ||photo:')}` 
-                    : item;
+                const loggedItem = base64Photo ? `${item} ||photo:${base64Photo}` : item;
                 await window.ProductCatalog.addEnquiry(loggedItem, email, 'Email');
                 await sendEmail(name, email, item, message);
                 showModalFeedback(`Opening mail client... Thank you, ${name}!`, 'success');
@@ -425,13 +422,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            let base64Photos = [];
+            let base64Photo = null;
             if (fileInput && fileInput.files.length > 0) {
                 try {
-                    const promises = Array.from(fileInput.files).map(file => getBase64(file));
-                    base64Photos = await Promise.all(promises);
+                    base64Photo = await getBase64(fileInput.files[0]);
                 } catch (err) {
-                    console.error('[Homepage] Failed to read photo files:', err);
+                    console.error('[Homepage] Failed to read photo file:', err);
                 }
             }
 
@@ -440,9 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             setTimeout(async () => {
-                const loggedItem = base64Photos.length > 0 
-                    ? `General Workshop Enquiry ||photo:${base64Photos.join(' ||photo:')}` 
-                    : 'General Workshop Enquiry';
+                const loggedItem = base64Photo ? `General Workshop Enquiry ||photo:${base64Photo}` : 'General Workshop Enquiry';
                 await window.ProductCatalog.addEnquiry(loggedItem, email, 'Email');
                 await sendEmail(name, email, 'General Workshop Enquiry', message);
                 showInlineFeedback(`Thank you, ${name}! Mail client is opening to send your enquiry.`, 'success');
