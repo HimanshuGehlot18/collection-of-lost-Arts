@@ -1412,20 +1412,30 @@
                     const tr = document.createElement('tr');
                     const statusClass = (req.status || 'Pending').toLowerCase().replace(' ', '');
 
-                    // Extract actual product name and photo attachment
+                    // Extract actual product name and photo attachments
                     let prodName = req.product;
                     let photoHtml = '';
                     if (prodName && prodName.includes(' ||photo:')) {
                         const parts = prodName.split(' ||photo:');
                         prodName = parts[0];
-                        const photoData = parts[1];
-                        if (photoData && photoData.startsWith('data:image')) {
-                            photoHtml = `
-                                <div style="margin-top: 4px;">
-                                    <a href="#" class="preview-enquiry-photo" data-photo="${photoData}" style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--accent); text-decoration: none; font-weight: 500;">
+                        const photos = parts.slice(1);
+                        
+                        let linksHtml = '';
+                        photos.forEach((photoData, pIdx) => {
+                            if (photoData && photoData.startsWith('data:image')) {
+                                linksHtml += `
+                                    <a href="#" class="preview-enquiry-photo" data-photo="${photoData}" style="display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--accent); text-decoration: none; font-weight: 500; margin-right: 8px;">
                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                                        View Attachment
+                                        Photo ${pIdx + 1}
                                     </a>
+                                `;
+                            }
+                        });
+
+                        if (linksHtml) {
+                            photoHtml = `
+                                <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px;">
+                                    ${linksHtml}
                                 </div>
                             `;
                         }
