@@ -582,7 +582,7 @@
                 id: 'current_settings',
                 password: 'admin123',
                 email: 'sonidiv1993@gmail.com',
-                phone: '+91 86195 59916',
+                phone: '+91 89468 66094',
                 web3forms_key: ''
             };
 
