@@ -192,21 +192,64 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const sendEmail = async (name, contact, subject, message) => {
+    const sendEmail = async (name, contact, subject, message, file = null) => {
         let receiver = "sonidiv1993@gmail.com";
+        let web3formsKey = "";
+        
+        if (typeof WEB3FORMS_KEY !== 'undefined' && WEB3FORMS_KEY) {
+            web3formsKey = WEB3FORMS_KEY;
+        }
+        
         try {
             const settings = await window.ProductCatalog.getSettings();
-            if (settings && settings.email) {
-                receiver = settings.email;
+            if (settings) {
+                if (settings.email) receiver = settings.email;
+                if (settings.web3forms_key) web3formsKey = settings.web3forms_key;
             }
         } catch (err) {
-            console.warn('[Modal] Failed to get receiver email, using fallback:', err);
+            console.warn('[Modal] Failed to query receiver/web3forms settings:', err);
         }
+
+        if (web3formsKey) {
+            try {
+                const formData = new FormData();
+                formData.append('access_key', web3formsKey);
+                formData.append('name', name);
+                formData.append('email', contact);
+                formData.append('subject', `Enquiry: ${subject}`);
+                formData.append('message', `Product/Subject: ${subject}\nContact details: ${contact}\n\nEnquiry details:\n${message}`);
+                
+                if (file) {
+                    formData.append('attachment', file);
+                }
+
+                const res = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (res.ok) {
+                    console.log('[Modal] Enquiry form sent via Web3Forms successfully.');
+                    return true;
+                } else {
+                    console.warn('[Modal] Web3Forms API returned non-ok status, falling back to mailto.');
+                }
+            } catch (err) {
+                console.error('[Modal] Web3Forms request failed:', err);
+            }
+        }
+
+        // Fallback to mailto client
         const emailSubject = `Enquiry: ${subject}`;
-        const emailBody = `Name: ${name}\nContact: ${contact}\n\nEnquiry details:\n${message}\n\n---\nSent from Website Contact System.`;
+        let emailBody = `Name: ${name}\nContact: ${contact}\n\nEnquiry details:\n${message}`;
+        if (file) {
+            emailBody += `\n\n[Photo Attachment: Yes (View in Admin Dashboard)]`;
+        }
+        emailBody += `\n\n---\nSent from Website Contact System.`;
         
         const mailtoUrl = `mailto:${receiver}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
         window.location.href = mailtoUrl;
+        return false;
     };
 
     const sendWhatsAppMessage = (productName, clientNumber) => {
@@ -349,14 +392,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const submitBtn = modalForm.querySelector('.modal-submit-btn');
-            submitBtn.textContent = 'Opening Mail...';
+            submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
 
             setTimeout(async () => {
                 const loggedItem = base64Photo ? `${item} ||photo:${base64Photo}` : item;
                 await window.ProductCatalog.addEnquiry(loggedItem, email, 'Email');
-                await sendEmail(name, email, item, message);
-                showModalFeedback(`Opening mail client... Thank you, ${name}!`, 'success');
+                
+                const attachedFile = fileInput && fileInput.files.length > 0 ? fileInput.files[0] : null;
+                const sentViaAPI = await sendEmail(name, email, item, message, attachedFile);
+                
+                if (sentViaAPI) {
+                    showModalFeedback(`Enquiry sent directly! Thank you, ${name}!`, 'success');
+                } else {
+                    showModalFeedback(`Opening mail client... Thank you, ${name}!`, 'success');
+                }
                 
                 setTimeout(() => {
                     closeModal();
@@ -432,14 +482,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const submitBtn = inlineForm.querySelector('.btn-submit');
-            submitBtn.textContent = 'Opening Mail...';
+            submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
 
             setTimeout(async () => {
                 const loggedItem = base64Photo ? `General Workshop Enquiry ||photo:${base64Photo}` : 'General Workshop Enquiry';
                 await window.ProductCatalog.addEnquiry(loggedItem, email, 'Email');
-                await sendEmail(name, email, 'General Workshop Enquiry', message);
-                showInlineFeedback(`Thank you, ${name}! Mail client is opening to send your enquiry.`, 'success');
+                
+                const attachedFile = fileInput && fileInput.files.length > 0 ? fileInput.files[0] : null;
+                const sentViaAPI = await sendEmail(name, email, 'General Workshop Enquiry', message, attachedFile);
+                
+                if (sentViaAPI) {
+                    showInlineFeedback(`Thank you, ${name}! Your enquiry has been sent directly.`, 'success');
+                } else {
+                    showInlineFeedback(`Thank you, ${name}! Mail client is opening to send your enquiry.`, 'success');
+                }
                 inlineForm.reset();
                 submitBtn.textContent = 'Send Enquiry';
                 submitBtn.disabled = false;
