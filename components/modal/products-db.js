@@ -287,6 +287,7 @@
                     return item;
                 } catch (err) {
                     console.error('[Database] Supabase insert product failed:', err);
+                    throw err;
                 }
             }
 
@@ -309,6 +310,7 @@
                     return;
                 } catch (err) {
                     console.error('[Database] Supabase delete product failed:', err);
+                    throw err;
                 }
             }
 
@@ -339,6 +341,7 @@
                     return;
                 } catch (err) {
                     console.error('[Database] Supabase update product failed:', err);
+                    throw err;
                 }
             }
 
