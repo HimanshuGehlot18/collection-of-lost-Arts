@@ -1227,18 +1227,30 @@
 
             // 1. Password security gate helpers
             const loadGateSettings = async () => {
-                activeSettings = await window.ProductCatalog.getSettings();
+                try {
+                    activeSettings = await window.ProductCatalog.getSettings();
+                } catch (err) {
+                    console.error('[Admin] Failed to load gate settings:', err);
+                }
+                if (!activeSettings) {
+                    activeSettings = {
+                        password: 'admin123',
+                        email: 'sonidiv1993@gmail.com',
+                        phone: '+91 89468 66094',
+                        web3forms_key: ''
+                    };
+                }
             };
 
-            const unlockDashboard = () => {
+            const unlockDashboard = async () => {
                 loginGate.style.display = 'none';
                 dashboard.style.display = 'block';
                 logoutBtn.style.display = 'block';
 
-                // Initial loads
-                renderInquiries();
-                renderInventory();
-                populateCategorySelect();
+                // Initial loads - load inventory first to ensure currentProducts is populated for categories mapping
+                await renderInventory();
+                await renderInquiries();
+                await populateCategorySelect();
             };
 
             const lockDashboard = () => {
@@ -1254,21 +1266,30 @@
                 if (sessionStorage.getItem('admin_authenticated') === 'true') {
                     unlockDashboard();
                 }
+            }).catch(err => {
+                console.error('[Admin] loadGateSettings failed:', err);
             });
 
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                if (!activeSettings) await loadGateSettings();
+                try {
+                    if (!activeSettings) await loadGateSettings();
 
-                const key = passwordInput.value;
-                if (key === activeSettings.password) {
-                    sessionStorage.setItem('admin_authenticated', 'true');
-                    loginError.style.display = 'none';
-                    unlockDashboard();
-                } else {
-                    loginError.textContent = 'Invalid access code. Please try again.';
+                    const key = passwordInput.value;
+                    const expectedPass = (activeSettings && activeSettings.password) ? activeSettings.password : 'admin123';
+                    if (key === expectedPass) {
+                        sessionStorage.setItem('admin_authenticated', 'true');
+                        loginError.style.display = 'none';
+                        await unlockDashboard();
+                    } else {
+                        loginError.textContent = 'Invalid access code. Please try again.';
+                        loginError.style.display = 'block';
+                        passwordInput.value = '';
+                    }
+                } catch (err) {
+                    console.error('[Admin] Login submission error:', err);
+                    loginError.textContent = 'System login check failed. Defaulting to local gate.';
                     loginError.style.display = 'block';
-                    passwordInput.value = '';
                 }
             });
 
@@ -1993,11 +2014,26 @@
 
             // 7. Security Credentials Settings
             async function loadSettings() {
-                activeSettings = await window.ProductCatalog.getSettings();
-                settingsEmail.value = activeSettings.email;
-                settingsPhone.value = activeSettings.phone;
-                settingsPassword.value = activeSettings.password;
-                document.getElementById('settings-web3forms').value = activeSettings.web3forms_key || '';
+                try {
+                    activeSettings = await window.ProductCatalog.getSettings();
+                } catch (err) {
+                    console.error('[Admin] Failed to load settings:', err);
+                }
+                if (!activeSettings) {
+                    activeSettings = {
+                        password: 'admin123',
+                        email: 'sonidiv1993@gmail.com',
+                        phone: '+91 89468 66094',
+                        web3forms_key: ''
+                    };
+                }
+                settingsEmail.value = activeSettings.email || '';
+                settingsPhone.value = activeSettings.phone || '';
+                settingsPassword.value = activeSettings.password || '';
+                const keyInput = document.getElementById('settings-web3forms');
+                if (keyInput) {
+                    keyInput.value = activeSettings.web3forms_key || '';
+                }
             };
 
             settingsForm.addEventListener('submit', async (e) => {
