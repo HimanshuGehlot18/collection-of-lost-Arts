@@ -196,6 +196,19 @@ document.addEventListener('DOMContentLoaded', () => {
         await renderCategoriesAndFilters();
         await renderGalleryGrid();
 
+        // Auto-open product details modal if query parameter ?product=xyz is present
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const productParam = params.get('product');
+            if (productParam && window.openProductDetailsModal) {
+                setTimeout(() => {
+                    window.openProductDetailsModal(productParam);
+                }, 300);
+            }
+        } catch (e) {
+            console.warn('[Homepage] Query param open details failed:', e);
+        }
+
         // Update floating WhatsApp button dynamically with settings phone number
         try {
             const settings = await window.ProductCatalog.getSettings();

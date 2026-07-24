@@ -279,20 +279,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const description = currentProduct.desc || currentProduct.desc_text;
             if (description) message += `*Description:* ${description}\n`;
             
-            // Format photo link dynamically
-            if (currentProduct.img) {
+            // Format interactive product page link
+            const absoluteWebLink = `${window.location.origin}${window.location.pathname}?product=${encodeURIComponent(productName)}`;
+            message += `*Product & Photo Link:* ${absoluteWebLink}\n`;
+
+            // Format direct photo file link if not a local base64 upload
+            if (currentProduct.img && !currentProduct.img.startsWith('data:')) {
                 let absolutePhotoUrl = currentProduct.img;
-                if (currentProduct.img.startsWith('data:')) {
-                    // Do not include large base64 image data in WhatsApp URLs (would exceed URI length limits)
-                    absolutePhotoUrl = '';
-                } else if (!currentProduct.img.startsWith('http://') && !currentProduct.img.startsWith('https://')) {
-                    // Convert relative path to absolute URL
+                if (!currentProduct.img.startsWith('http://') && !currentProduct.img.startsWith('https://')) {
                     absolutePhotoUrl = `${window.location.origin}/${currentProduct.img.replace(/^\//, '')}`;
                 }
-                
-                if (absolutePhotoUrl) {
-                    message += `*Photo Link:* ${absolutePhotoUrl}\n`;
-                }
+                message += `*Photo Image File:* ${absolutePhotoUrl}\n`;
             }
         }
         
