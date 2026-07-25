@@ -1269,12 +1269,12 @@
                 logoutBtn.style.display = 'none';
                 loginGate.style.display = 'flex';
                 passwordInput.value = '';
-                sessionStorage.removeItem('admin_authenticated');
+                localStorage.removeItem('admin_authenticated');
             };
 
             // Init Gate Security settings query
             loadGateSettings().then(() => {
-                if (sessionStorage.getItem('admin_authenticated') === 'true') {
+                if (localStorage.getItem('admin_authenticated') === 'true') {
                     unlockDashboard();
                 }
             }).catch(err => {
@@ -1289,7 +1289,7 @@
                     const key = passwordInput.value;
                     const expectedPass = (activeSettings && activeSettings.password) ? activeSettings.password : 'admin123';
                     if (key === expectedPass) {
-                        sessionStorage.setItem('admin_authenticated', 'true');
+                        localStorage.setItem('admin_authenticated', 'true');
                         loginError.style.display = 'none';
                         await unlockDashboard();
                     } else {
