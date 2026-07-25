@@ -69,9 +69,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const catalog = await window.ProductCatalog.getAll();
         grid.innerHTML = '';
 
-        // Only show first 8 items on the homepage as a preview
-        const previewItems = catalog.slice(0, 8);
-        previewItems.forEach(item => {
+        // Only show items flagged for main screen.
+        // If none are flagged, fallback to first 8 items.
+        let homepageItems = catalog.filter(item => item.show_on_homepage === true);
+        if (homepageItems.length === 0) {
+            homepageItems = catalog.slice(0, 8);
+        }
+        homepageItems.forEach(item => {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.setAttribute('data-material', item.material);
@@ -138,7 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 1. Render Categories Showcase
         categoriesGrid.innerHTML = '';
-        categories.forEach(cat => {
+        const visibleCategories = categories.filter(cat => cat.on_display !== false);
+        visibleCategories.forEach(cat => {
             const card = document.createElement('div');
             card.className = 'category-card';
             card.setAttribute('data-category', cat.id);

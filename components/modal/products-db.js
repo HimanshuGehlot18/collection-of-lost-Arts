@@ -216,6 +216,10 @@
                             if (!item.images) {
                                 item.images = item.img ? [item.img] : [];
                             }
+                            if (typeof item.show_on_homepage === 'undefined') {
+                                const defaultHomepageIds = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8'];
+                                item.show_on_homepage = defaultHomepageIds.includes(item.id);
+                            }
                             return item;
                         });
                         return cachedCatalog;
@@ -255,6 +259,10 @@
                 if (!item.img && item.images.length > 0) {
                     item.img = item.images[0];
                 }
+                if (typeof item.show_on_homepage === 'undefined') {
+                    const defaultHomepageIds = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8'];
+                    item.show_on_homepage = defaultHomepageIds.includes(item.id);
+                }
                 return item;
             });
             return cachedCatalog;
@@ -281,7 +289,8 @@
                             quantity: item.quantity,
                             desc_text: item.desc,
                             img: item.img,
-                            images: item.images
+                            images: item.images,
+                            show_on_homepage: item.show_on_homepage !== false
                         }]);
                     if (error) throw error;
                     return item;
@@ -334,7 +343,8 @@
                             quantity: updatedItem.quantity,
                             desc_text: updatedItem.desc,
                             img: updatedItem.img,
-                            images: updatedItem.images
+                            images: updatedItem.images,
+                            show_on_homepage: updatedItem.show_on_homepage !== false
                         })
                         .eq('id', id);
                     if (error) throw error;
@@ -369,7 +379,8 @@
                     quantity: item.quantity,
                     desc_text: item.desc,
                     img: item.img,
-                    images: item.images
+                    images: item.images,
+                    show_on_homepage: item.show_on_homepage !== false
                 }));
                 
                 const { error } = await supabase
@@ -509,13 +520,19 @@
                     if (error) throw error;
                     
                     if (data && data.length > 0) {
-                        return data;
+                        return data.map(cat => {
+                            if (typeof cat.on_display === 'undefined') {
+                                cat.on_display = true;
+                            }
+                            return cat;
+                        });
                     }
 
                     // Seed cloud DB if table is empty
                     console.log('[Database] Cloud categories table is empty. Seeding default collections...');
-                    await supabase.from('categories').insert(defaultCats);
-                    return defaultCats;
+                    const seededCats = defaultCats.map(c => ({ ...c, on_display: true }));
+                    await supabase.from('categories').insert(seededCats);
+                    return seededCats;
                 } catch (err) {
                     console.warn('[Database] Supabase categories query failed, using local fallback.', err);
                 }
@@ -524,12 +541,21 @@
             // Local fallback
             try {
                 const local = localStorage.getItem('product_categories');
-                if (local) return JSON.parse(local);
-                localStorage.setItem('product_categories', JSON.stringify(defaultCats));
+                if (local) {
+                    return JSON.parse(local).map(cat => {
+                        if (typeof cat.on_display === 'undefined') {
+                            cat.on_display = true;
+                        }
+                        return cat;
+                    });
+                }
+                const seeded = defaultCats.map(c => ({ ...c, on_display: true }));
+                localStorage.setItem('product_categories', JSON.stringify(seeded));
+                return seeded;
             } catch (err) {
                 console.warn('[Database] LocalStorage read/write categories failed:', err);
             }
-            return defaultCats;
+            return defaultCats.map(c => ({ ...c, on_display: true }));
         },
 
         addCategory: async function(category) {
@@ -537,7 +563,12 @@
                 try {
                     const { error } = await supabase
                         .from('categories')
-                        .insert([category]);
+                        .insert([{
+                            id: category.id,
+                            name: category.name,
+                            img: category.img,
+                            on_display: category.on_display !== false
+                        }]);
                     if (error) throw error;
                     return category;
                 } catch (err) {
@@ -554,6 +585,40 @@
                 console.warn('[Database] LocalStorage save category failed:', err);
             }
             return category;
+        },
+
+        updateCategory: async function(id, updatedCat) {
+            if (useCloudDB && supabase) {
+                try {
+                    const { error } = await supabase
+                        .from('categories')
+                        .update({
+                            name: updatedCat.name,
+                            img: updatedCat.img,
+                            on_display: updatedCat.on_display !== false
+                        })
+                        .eq('id', id);
+                    if (error) throw error;
+                    return;
+                } catch (err) {
+                    console.error('[Database] Supabase update category failed:', err);
+                    throw err;
+                }
+            }
+
+            // Local fallback
+            try {
+                let categories = await this.getCategories();
+                categories = categories.map(c => {
+                    if (c.id === id) {
+                        return { ...c, ...updatedCat, id: c.id };
+                    }
+                    return c;
+                });
+                localStorage.setItem('product_categories', JSON.stringify(categories));
+            } catch (err) {
+                console.warn('[Database] LocalStorage update category failed:', err);
+            }
         },
 
         deleteCategory: async function(id) {

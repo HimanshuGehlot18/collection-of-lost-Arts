@@ -1035,6 +1035,11 @@
                                 placeholder="Artistic details, history, materials, polish finish..."></textarea>
                         </div>
 
+                        <div class="cms-form-group checkbox-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 24px;">
+                            <input type="checkbox" id="product-show-homepage" style="width: auto; margin-bottom: 0;">
+                            <label for="product-show-homepage" style="margin-bottom: 0; cursor: pointer; font-size: 13px; font-weight: 500;">Show this item on main screen (Home Page gallery)</label>
+                        </div>
+
                         <!-- Photo Selector Uploader (Base64 conversion) -->
                         <div class="cms-form-group">
                             <label>Product Photos (Minimum 1, Maximum 12)</label>
@@ -1094,6 +1099,11 @@
                                 </div>
                                 <div class="uploaded-previews-container" id="category-preview-container"
                                     style="display: none;"></div>
+                            </div>
+
+                            <div class="cms-form-group checkbox-group" style="display: flex; align-items: center; gap: 10px; margin-bottom: 24px;">
+                                <input type="checkbox" id="category-on-display" style="width: auto; margin-bottom: 0;" checked>
+                                <label for="category-on-display" style="margin-bottom: 0; cursor: pointer; font-size: 13px; font-weight: 500;">On Display (Show in Collections Showcase)</label>
                             </div>
                             <button type="submit" class="btn-add-product">Add Category</button>
                         </form>
@@ -1221,6 +1231,7 @@
             // Session states
             let uploadedBase64Images = [];
             let editingProductId = null;
+            let editingCategoryId = null;
             let activeSettings = null;
             let currentEnquiries = [];
             let currentProducts = [];
@@ -1799,6 +1810,9 @@
                 editingProductId = null;
                 renderUploadPreviews();
 
+                const showHomepageCheckbox = document.getElementById('product-show-homepage');
+                if (showHomepageCheckbox) showHomepageCheckbox.checked = false;
+
                 formPanelTitle.textContent = 'Add New Product';
                 btnSubmitProduct.textContent = 'Add Product To Floor';
                 btnCancelEdit.style.display = 'none';
@@ -1920,6 +1934,7 @@
                         document.getElementById('product-price').value = product.price || '';
                         document.getElementById('product-quantity').value = product.quantity || '';
                         document.getElementById('product-desc').value = product.desc || product.desc_text || '';
+                        document.getElementById('product-show-homepage').checked = product.show_on_homepage !== false;
 
                         uploadedBase64Images = product.images && product.images.length > 0
                             ? [...product.images]
@@ -1954,6 +1969,8 @@
                     return;
                 }
 
+                const showHomepage = document.getElementById('product-show-homepage').checked;
+
                 const newItem = {
                     name: name,
                     material: material,
@@ -1962,7 +1979,8 @@
                     quantity: qty,
                     desc: desc,
                     img: uploadedBase64Images[0],
-                    images: [...uploadedBase64Images]
+                    images: [...uploadedBase64Images],
+                    show_on_homepage: showHomepage
                 };
 
                 try {
@@ -1987,6 +2005,27 @@
 
             // 6. Categories CMS manager
             let categoryBase64Img = '';
+
+            const resetCategoryFormState = () => {
+                editingCategoryId = null;
+                categoryForm.reset();
+                categoryIdInput.disabled = false;
+                categoryBase64Img = '';
+                categoryPreviewContainer.style.display = 'none';
+                categoryPreviewContainer.innerHTML = '';
+                
+                const panelTitle = document.querySelector('#panel-categories h3');
+                if (panelTitle) panelTitle.textContent = 'Add New Category';
+                
+                const submitBtn = categoryForm.querySelector('button[type="submit"]');
+                if (submitBtn) submitBtn.textContent = 'Add Category';
+
+                const cancelBtn = document.getElementById('btn-cancel-category-edit');
+                if (cancelBtn) cancelBtn.remove();
+
+                const onDisplayCheckbox = document.getElementById('category-on-display');
+                if (onDisplayCheckbox) onDisplayCheckbox.checked = true;
+            };
 
             categoryFileInput.addEventListener('change', (e) => {
                 const file = e.target.files[0];
@@ -2031,11 +2070,69 @@
                             <div style="text-align: left;">
                                 <h4 style="font-size: 14px; font-weight: 500;">${cat.name}</h4>
                                 <span style="font-size: 11px; color: var(--text-secondary);">Slug ID: ${cat.id}</span>
+                                <span style="font-size: 10px; display: block; margin-top: 2px; color: ${cat.on_display !== false ? 'green' : 'red'}; font-weight: 600;">${cat.on_display !== false ? 'ON DISPLAY' : 'HIDDEN'}</span>
                             </div>
                         </div>
-                        <button class="btn-delete-row btn-delete-category" data-id="${cat.id}">&times;</button>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button class="btn-edit-category" data-id="${cat.id}" style="background: none; border: 1px solid var(--color-gold); color: var(--color-gold); border-radius: 4px; padding: 4px 10px; font-size: 11px; cursor: pointer; text-transform: uppercase;">Edit</button>
+                            <button class="btn-delete-row btn-delete-category" data-id="${cat.id}">&times;</button>
+                        </div>
                     `;
                     categoriesList.appendChild(row);
+                });
+
+                document.querySelectorAll('.btn-edit-category').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = e.target.getAttribute('data-id');
+                        const cat = list.find(c => c.id === id);
+                        if (!cat) return;
+
+                        editingCategoryId = cat.id;
+
+                        // Populate form fields
+                        categoryNameInput.value = cat.name;
+                        categoryIdInput.value = cat.id;
+                        categoryIdInput.disabled = true; // Slug ID cannot be changed once created
+
+                        const checkbox = document.getElementById('category-on-display');
+                        if (checkbox) {
+                            checkbox.checked = cat.on_display !== false;
+                        }
+
+                        categoryBase64Img = cat.img;
+                        categoryPreviewContainer.innerHTML = `
+                            <div class="preview-thumbnail-wrapper">
+                                <img src="${cat.img}" alt="Category Thumbnail">
+                                <button type="button" class="btn-remove-preview" id="btn-remove-category-img">&times;</button>
+                            </div>
+                        `;
+                        categoryPreviewContainer.style.display = 'block';
+
+                        document.getElementById('btn-remove-category-img').addEventListener('click', () => {
+                            categoryBase64Img = '';
+                            categoryPreviewContainer.style.display = 'none';
+                            categoryFileInput.value = '';
+                        });
+
+                        const panelTitle = document.querySelector('#panel-categories h3');
+                        if (panelTitle) panelTitle.textContent = 'Edit Category';
+
+                        const submitBtn = categoryForm.querySelector('button[type="submit"]');
+                        if (submitBtn) submitBtn.textContent = 'Save Changes';
+
+                        let cancelBtn = document.getElementById('btn-cancel-category-edit');
+                        if (!cancelBtn) {
+                            cancelBtn = document.createElement('button');
+                            cancelBtn.type = 'button';
+                            cancelBtn.id = 'btn-cancel-category-edit';
+                            cancelBtn.className = 'btn-logout';
+                            cancelBtn.style.marginTop = '12px';
+                            cancelBtn.style.width = '100%';
+                            cancelBtn.textContent = 'Cancel Edit';
+                            cancelBtn.addEventListener('click', resetCategoryFormState);
+                            categoryForm.appendChild(cancelBtn);
+                        }
+                    });
                 });
 
                 document.querySelectorAll('.btn-delete-category').forEach(btn => {
@@ -2043,6 +2140,9 @@
                         const id = e.target.getAttribute('data-id');
                         const cat = list.find(c => c.id === id);
                         if (confirm(`Are you sure you want to delete category "${cat.name}"?`)) {
+                            if (editingCategoryId === id) {
+                                resetCategoryFormState();
+                            }
                             await window.ProductCatalog.deleteCategory(id);
                             await renderCategories();
                             if (window.opener && window.opener.refreshGalleryGrid) {
@@ -2058,18 +2158,43 @@
                 const name = categoryNameInput.value.trim();
                 const slug = categoryIdInput.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
 
+                const onDisplayCheckbox = document.getElementById('category-on-display');
+                const onDisplay = onDisplayCheckbox ? onDisplayCheckbox.checked : true;
+
                 if (!categoryBase64Img) {
                     alert('Please upload a category thumbnail.');
                     return;
                 }
 
-                const newCat = { id: slug, name: name, img: categoryBase64Img };
+                if (editingCategoryId) {
+                    const updatedCat = {
+                        name: name,
+                        img: categoryBase64Img,
+                        on_display: onDisplay
+                    };
+                    await window.ProductCatalog.updateCategory(editingCategoryId, updatedCat);
+                    alert(`Category "${name}" updated successfully!`);
+                    resetCategoryFormState();
+                } else {
+                    const existingCats = await window.ProductCatalog.getCategories();
+                    if (existingCats.some(c => c.id === slug)) {
+                        alert(`Error: A category with Slug ID "${slug}" already exists!`);
+                        return;
+                    }
 
-                await window.ProductCatalog.addCategory(newCat);
-                alert(`Category "${name}" added!`);
-                categoryForm.reset();
-                categoryBase64Img = '';
-                categoryPreviewContainer.style.display = 'none';
+                    const newCat = { 
+                        id: slug, 
+                        name: name, 
+                        img: categoryBase64Img,
+                        on_display: onDisplay
+                    };
+                    await window.ProductCatalog.addCategory(newCat);
+                    alert(`Category "${name}" added!`);
+                    categoryForm.reset();
+                    categoryBase64Img = '';
+                    categoryPreviewContainer.style.display = 'none';
+                }
+
                 await renderCategories();
 
                 if (window.opener && window.opener.refreshGalleryGrid) {
