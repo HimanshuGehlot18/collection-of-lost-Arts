@@ -1145,8 +1145,9 @@ a {
         color: var(--text-primary) !important;
     }
 
-    .nav-link::after {
-        content: none !important;
+    .main-nav .nav-link:hover,
+    .main-nav .nav-link.active {
+        color: var(--color-gold) !important;
     }
 
     .header-actions .btn-enquiry {
