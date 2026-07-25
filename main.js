@@ -132,8 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderCategoriesAndFilters = async () => {
         const categoriesGrid = document.getElementById('categories-grid');
-        const galleryFilters = document.getElementById('gallery-filters');
-        if (!categoriesGrid || !galleryFilters) return;
+        if (!categoriesGrid) return;
 
         const categories = await window.ProductCatalog.getCategories();
 
@@ -151,45 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             
             card.addEventListener('click', () => {
-                const gallerySection = document.getElementById('gallery');
-                if (gallerySection) {
-                    const headerOffset = 100;
-                    const elementPosition = gallerySection.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-                filterGallery(cat.id);
+                window.location.href = `gallery.html?filter=${cat.id}`;
             });
             categoriesGrid.appendChild(card);
-        });
-
-        // 2. Render Gallery Filters
-        galleryFilters.innerHTML = '';
-        
-        // "All" filter button
-        const allBtn = document.createElement('button');
-        allBtn.className = 'filter-btn active';
-        allBtn.setAttribute('data-filter', 'all');
-        allBtn.textContent = 'All';
-        allBtn.addEventListener('click', (e) => {
-            filterGallery('all');
-        });
-        galleryFilters.appendChild(allBtn);
-
-        // Individual category filter buttons
-        categories.forEach(cat => {
-            const btn = document.createElement('button');
-            btn.className = 'filter-btn';
-            btn.setAttribute('data-filter', cat.id);
-            btn.textContent = cat.name;
-            btn.addEventListener('click', (e) => {
-                filterGallery(cat.id);
-            });
-            galleryFilters.appendChild(btn);
         });
     };
 
