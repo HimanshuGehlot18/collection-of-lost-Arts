@@ -1142,15 +1142,11 @@ a {
     .nav-link {
         font-size: 18px;
         letter-spacing: 4px;
+        color: var(--text-primary) !important;
     }
 
     .nav-link::after {
         content: none !important;
-    }
-
-    .main-nav .nav-link:hover,
-    .main-nav .nav-link.active {
-        color: var(--text-primary) !important;
     }
 
     .header-actions .btn-enquiry {
