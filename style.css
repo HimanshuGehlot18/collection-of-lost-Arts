@@ -1144,6 +1144,15 @@ a {
         letter-spacing: 4px;
     }
 
+    .nav-link::after {
+        content: none !important;
+    }
+
+    .main-nav .nav-link:hover,
+    .main-nav .nav-link.active {
+        color: var(--text-primary) !important;
+    }
+
     .header-actions .btn-enquiry {
         display: none; /* Hide top right button on mobile to avoid cramming */
     }
