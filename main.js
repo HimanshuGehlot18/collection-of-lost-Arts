@@ -233,6 +233,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     initHomepage();
+
+    // 6. Hero Background Slider
+    const initHeroSlider = () => {
+        const slides = document.querySelectorAll('.hero-slide');
+        if (slides.length <= 1) return;
+
+        let currentSlide = 0;
+        const slideInterval = 6000;
+
+        const nextSlide = () => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        };
+
+        setInterval(nextSlide, slideInterval);
+    };
+    initHeroSlider();
     
     // Expose render function so admin dashboard updates trigger homepage updates
     window.refreshGalleryGrid = async () => {

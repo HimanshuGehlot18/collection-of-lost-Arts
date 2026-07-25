@@ -277,8 +277,7 @@ a {
  * ------------------------------------------------------------- */
 
 .hero-section {
-    background: linear-gradient(to right, rgba(20, 26, 35, 0.92) 35%, rgba(20, 26, 35, 0.6) 65%, rgba(20, 26, 35, 0.2)), 
-                url('image/pexels-yatrikyash-34575532.jpg') center/cover no-repeat;
+    background-color: #141a23;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -286,6 +285,37 @@ a {
     position: relative;
     padding-top: var(--header-height);
     padding-bottom: 80px;
+    overflow: hidden;
+}
+
+.hero-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transform: scale(1.06);
+    transition: opacity 1.8s cubic-bezier(0.445, 0.05, 0.55, 0.95), transform 8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1;
+}
+
+.hero-slide.active {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 2;
 }
 
 .hero-container {
@@ -297,6 +327,8 @@ a {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    position: relative;
+    z-index: 3;
 }
 
 .section-tagline {
@@ -380,6 +412,7 @@ a {
     display: flex;
     justify-content: center;
     width: 100%;
+    z-index: 3;
 }
 
 .scroll-circle {
