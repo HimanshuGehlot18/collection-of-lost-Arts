@@ -1315,12 +1315,14 @@
                 { btn: tabSettingsBtn, panel: panelSettings, render: loadSettings }
             ];
 
-            const switchTab = (activeTabBtn) => {
+            const switchTab = (activeTabBtn, skipRender = false) => {
                 tabs.forEach(t => {
                     if (t.btn === activeTabBtn) {
                         t.btn.classList.add('active');
                         t.panel.classList.add('active');
-                        t.render();
+                        if (!skipRender) {
+                            t.render();
+                        }
                     } else {
                         t.btn.classList.remove('active');
                         t.panel.classList.remove('active');
@@ -1921,8 +1923,8 @@
                         const product = currentProducts.find(item => item.id === id);
                         if (!product) return;
 
-                        // Switch to Add/Edit form tab first (clears previous form state)
-                        switchTab(tabAddProductBtn);
+                        // Switch to Add/Edit form tab first, skipping the default reset render
+                        switchTab(tabAddProductBtn, true);
 
                         // Make sure category select is populated before setting fields
                         await populateCategorySelect();
@@ -2025,6 +2027,8 @@
 
                 const onDisplayCheckbox = document.getElementById('category-on-display');
                 if (onDisplayCheckbox) onDisplayCheckbox.checked = true;
+
+                categoryFileInput.setAttribute('required', '');
             };
 
             categoryFileInput.addEventListener('change', (e) => {
@@ -2093,6 +2097,7 @@
                         categoryNameInput.value = cat.name;
                         categoryIdInput.value = cat.id;
                         categoryIdInput.disabled = true; // Slug ID cannot be changed once created
+                        categoryFileInput.removeAttribute('required');
 
                         const checkbox = document.getElementById('category-on-display');
                         if (checkbox) {
