@@ -69,7 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const catalog = await window.ProductCatalog.getAll();
         grid.innerHTML = '';
 
-        catalog.forEach(item => {
+        // Only show first 8 items on the homepage as a preview
+        const previewItems = catalog.slice(0, 8);
+        previewItems.forEach(item => {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.setAttribute('data-material', item.material);

@@ -1491,3 +1491,107 @@ a {
         height: 24px;
     }
 }
+
+/* -------------------------------------------------------------
+ * DEDICATED GALLERY PAGE & BUTTONS STYLING
+ * ------------------------------------------------------------- */
+
+.btn-outline-dark {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--text-primary);
+    border: 1.5px solid var(--text-primary);
+    padding: 14px 36px;
+    background-color: transparent;
+    transition: var(--transition-smooth);
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-outline-dark:hover {
+    background-color: var(--text-primary);
+    color: var(--bg-cream);
+    border-color: var(--text-primary);
+}
+
+.gallery-page-header {
+    text-align: center;
+    padding: 140px 0 40px 0;
+    background-color: var(--bg-cream);
+}
+
+.gallery-page-header .section-category {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    margin-bottom: 12px;
+}
+
+.gallery-page-header .gallery-title {
+    font-family: var(--font-serif);
+    font-size: 48px;
+    font-weight: 400;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.gallery-page-header .gallery-subtitle {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 30px auto;
+}
+
+.search-container {
+    max-width: 500px;
+    margin: 0 auto 40px auto;
+    position: relative;
+    padding: 0 24px;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.gallery-search-input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    border: 1px solid var(--border-light);
+    border-radius: 30px;
+    background-color: var(--bg-white);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--text-primary);
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.gallery-search-input:focus {
+    outline: none;
+    border-color: var(--color-gold);
+    box-shadow: 0 4px 20px rgba(178, 134, 82, 0.08);
+}
+
+.search-icon-svg {
+    position: absolute;
+    left: 20px;
+    color: var(--text-secondary);
+    pointer-events: none;
+    transition: var(--transition-smooth);
+}
+
+.gallery-search-input:focus + .search-icon-svg {
+    color: var(--color-gold);
+}
