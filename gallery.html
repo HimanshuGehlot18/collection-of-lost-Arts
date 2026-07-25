@@ -297,8 +297,8 @@
                 });
                 galleryFilters.appendChild(allBtn);
 
-                // Create category buttons
-                categories.forEach(cat => {
+                const visibleCategories = categories.filter(cat => cat.on_display !== false);
+                visibleCategories.forEach(cat => {
                     const btn = document.createElement('button');
                     btn.className = `filter-btn ${activeFilter === cat.id ? 'active' : ''}`;
                     btn.textContent = cat.name;

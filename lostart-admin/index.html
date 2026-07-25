@@ -2001,7 +2001,7 @@
                     }
                 } catch (err) {
                     console.error('[Admin] Product operation failed:', err);
-                    alert(`Database Error: ${err.message || JSON.stringify(err)}`);
+                    alert(`Database Error: ${err.message || JSON.stringify(err)}\n\nIf you are using a cloud database (Supabase), please make sure you have run the migration to add the display status columns:\n\nALTER TABLE products ADD COLUMN show_on_homepage BOOLEAN DEFAULT true;`);
                 }
             });
 
@@ -2171,39 +2171,45 @@
                     return;
                 }
 
-                if (editingCategoryId) {
-                    const updatedCat = {
-                        name: name,
-                        img: categoryBase64Img,
-                        on_display: onDisplay
-                    };
-                    await window.ProductCatalog.updateCategory(editingCategoryId, updatedCat);
-                    alert(`Category "${name}" updated successfully!`);
-                    resetCategoryFormState();
-                } else {
-                    const existingCats = await window.ProductCatalog.getCategories();
-                    if (existingCats.some(c => c.id === slug)) {
-                        alert(`Error: A category with Slug ID "${slug}" already exists!`);
-                        return;
+                try {
+                    if (editingCategoryId) {
+                        const updatedCat = {
+                            name: name,
+                            img: categoryBase64Img,
+                            on_display: onDisplay
+                        };
+                        await window.ProductCatalog.updateCategory(editingCategoryId, updatedCat);
+                        alert(`Category "${name}" updated successfully!`);
+                        resetCategoryFormState();
+                    } else {
+                        const existingCats = await window.ProductCatalog.getCategories();
+                        if (existingCats.some(c => c.id === slug)) {
+                            alert(`Error: A category with Slug ID "${slug}" already exists!`);
+                            return;
+                        }
+
+                        const newCat = { 
+                            id: slug, 
+                            name: name, 
+                            img: categoryBase64Img,
+                            on_display: onDisplay
+                        };
+                        await window.ProductCatalog.addCategory(newCat);
+                        alert(`Category "${name}" added!`);
+                        categoryForm.reset();
+                        categoryBase64Img = '';
+                        categoryPreviewContainer.style.display = 'none';
+                        categoryFileInput.setAttribute('required', '');
                     }
 
-                    const newCat = { 
-                        id: slug, 
-                        name: name, 
-                        img: categoryBase64Img,
-                        on_display: onDisplay
-                    };
-                    await window.ProductCatalog.addCategory(newCat);
-                    alert(`Category "${name}" added!`);
-                    categoryForm.reset();
-                    categoryBase64Img = '';
-                    categoryPreviewContainer.style.display = 'none';
-                }
+                    await renderCategories();
 
-                await renderCategories();
-
-                if (window.opener && window.opener.refreshGalleryGrid) {
-                    window.opener.refreshGalleryGrid();
+                    if (window.opener && window.opener.refreshGalleryGrid) {
+                        window.opener.refreshGalleryGrid();
+                    }
+                } catch (err) {
+                    console.error('[Admin] Category operation failed:', err);
+                    alert(`Database Error: ${err.message || JSON.stringify(err)}\n\nIf you are using a cloud database (Supabase), please make sure you have run the migration to add the display status columns:\n\nALTER TABLE categories ADD COLUMN on_display BOOLEAN DEFAULT true;`);
                 }
             });
 
