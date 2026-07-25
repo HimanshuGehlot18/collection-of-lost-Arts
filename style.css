@@ -1154,6 +1154,10 @@ a {
         display: none; /* Hide top right button on mobile to avoid cramming */
     }
 
+    .hamburger-bar {
+        background-color: var(--text-primary) !important;
+    }
+
     /* Mobile menu hamburger state */
     .menu-toggle.open .hamburger-bar:nth-child(1) {
         transform: translateY(7.5px) rotate(45deg);
